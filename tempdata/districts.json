@@ -1,0 +1,723 @@
+[
+    {
+        "id": 1,
+        "name": "Batu Sopang",
+        "code": "64.01.01",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Tanjung Harapan",
+        "code": "64.01.02",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 3,
+        "name": "Paser Belengkong",
+        "code": "64.01.03",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 4,
+        "name": "Tanah Grogot",
+        "code": "64.01.04",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 5,
+        "name": "Kuaro",
+        "code": "64.01.05",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 6,
+        "name": "Long Ikis",
+        "code": "64.01.06",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 7,
+        "name": "Muara Komam",
+        "code": "64.01.07",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 8,
+        "name": "Long Kali",
+        "code": "64.01.08",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 9,
+        "name": "Batu Engau",
+        "code": "64.01.09",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 10,
+        "name": "Muara Samu",
+        "code": "64.01.10",
+        "city_code": "64.01",
+        "city_id": 1
+    },
+    {
+        "id": 11,
+        "name": "Muara Muntai",
+        "code": "64.02.01",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 12,
+        "name": "Loa Kulu",
+        "code": "64.02.02",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 13,
+        "name": "Loa Janan",
+        "code": "64.02.03",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 14,
+        "name": "Anggana",
+        "code": "64.02.04",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 15,
+        "name": "Muara Badak",
+        "code": "64.02.05",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 16,
+        "name": "Tenggarong",
+        "code": "64.02.06",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 17,
+        "name": "Sebulu",
+        "code": "64.02.07",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 18,
+        "name": "Kota Bangun",
+        "code": "64.02.08",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 19,
+        "name": "Kenohan",
+        "code": "64.02.09",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 20,
+        "name": "Kembang Janggut",
+        "code": "64.02.10",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 21,
+        "name": "Muara Kaman",
+        "code": "64.02.11",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 22,
+        "name": "Tabang",
+        "code": "64.02.12",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 23,
+        "name": "Samboja",
+        "code": "64.02.13",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 24,
+        "name": "Muara Jawa",
+        "code": "64.02.14",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 25,
+        "name": "Sanga Sanga",
+        "code": "64.02.15",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 26,
+        "name": "Tenggarong Seberang",
+        "code": "64.02.16",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 27,
+        "name": "Marang Kayu",
+        "code": "64.02.17",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 28,
+        "name": "Muara Wis",
+        "code": "64.02.18",
+        "city_code": "64.02",
+        "city_id": 2
+    },
+    {
+        "id": 29,
+        "name": "Kelay",
+        "code": "64.03.01",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 30,
+        "name": "Talisayan",
+        "code": "64.03.02",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 31,
+        "name": "Sambaliung",
+        "code": "64.03.03",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 32,
+        "name": "Segah",
+        "code": "64.03.04",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 33,
+        "name": "Tanjung Redeb",
+        "code": "64.03.05",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 34,
+        "name": "Gunung Tabur",
+        "code": "64.03.06",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 35,
+        "name": "Pulau Derawan",
+        "code": "64.03.07",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 36,
+        "name": "Biduk-Biduk",
+        "code": "64.03.08",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 37,
+        "name": "Teluk Bayur",
+        "code": "64.03.09",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 38,
+        "name": "Tabalar",
+        "code": "64.03.10",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 39,
+        "name": "Maratua",
+        "code": "64.03.11",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 40,
+        "name": "Batu Putih",
+        "code": "64.03.12",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 41,
+        "name": "Biatan",
+        "code": "64.03.13",
+        "city_code": "64.03",
+        "city_id": 3
+    },
+    {
+        "id": 42,
+        "name": "Long Iram",
+        "code": "64.07.05",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 43,
+        "name": "Melak",
+        "code": "64.07.06",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 44,
+        "name": "Barong Tongkok",
+        "code": "64.07.07",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 45,
+        "name": "Damai",
+        "code": "64.07.08",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 46,
+        "name": "Muara Lawa",
+        "code": "64.07.09",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 47,
+        "name": "Muara Pahu",
+        "code": "64.07.10",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 48,
+        "name": "Jempang",
+        "code": "64.07.11",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 49,
+        "name": "Bongan",
+        "code": "64.07.12",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 50,
+        "name": "Penyinggahan",
+        "code": "64.07.13",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 51,
+        "name": "Bentian Besar",
+        "code": "64.07.14",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 52,
+        "name": "Linggang Bigung",
+        "code": "64.07.15",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 53,
+        "name": "Nyuatan",
+        "code": "64.07.16",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 54,
+        "name": "Siluq Ngurai",
+        "code": "64.07.17",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 55,
+        "name": "Mook Manaar Bulatn",
+        "code": "64.07.18",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 56,
+        "name": "Tering",
+        "code": "64.07.19",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 57,
+        "name": "Sekolaq Darat",
+        "code": "64.07.20",
+        "city_code": "64.07",
+        "city_id": 4
+    },
+    {
+        "id": 58,
+        "name": "Muara Ancalong",
+        "code": "64.08.01",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 59,
+        "name": "Muara Wahau",
+        "code": "64.08.02",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 60,
+        "name": "Muara Bengkal",
+        "code": "64.08.03",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 61,
+        "name": "Sangatta Utara",
+        "code": "64.08.04",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 62,
+        "name": "Sangkulirang",
+        "code": "64.08.05",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 63,
+        "name": "Busang",
+        "code": "64.08.06",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 64,
+        "name": "Telen",
+        "code": "64.08.07",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 65,
+        "name": "Kombeng",
+        "code": "64.08.08",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 66,
+        "name": "Bengalon",
+        "code": "64.08.09",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 67,
+        "name": "Kaliorang",
+        "code": "64.08.10",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 68,
+        "name": "Sandaran",
+        "code": "64.08.11",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 69,
+        "name": "Sangatta Selatan",
+        "code": "64.08.12",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 70,
+        "name": "Teluk Pandan",
+        "code": "64.08.13",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 71,
+        "name": "Rantau Pulung",
+        "code": "64.08.14",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 72,
+        "name": "Kaubun",
+        "code": "64.08.15",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 73,
+        "name": "Karangan",
+        "code": "64.08.16",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 74,
+        "name": "Batu Ampar",
+        "code": "64.08.17",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 75,
+        "name": "Long Mesangat",
+        "code": "64.08.18",
+        "city_code": "64.08",
+        "city_id": 5
+    },
+    {
+        "id": 76,
+        "name": "Penajam",
+        "code": "64.09.01",
+        "city_code": "64.09",
+        "city_id": 6
+    },
+    {
+        "id": 77,
+        "name": "Waru",
+        "code": "64.09.02",
+        "city_code": "64.09",
+        "city_id": 6
+    },
+    {
+        "id": 78,
+        "name": "Babulu",
+        "code": "64.09.03",
+        "city_code": "64.09",
+        "city_id": 6
+    },
+    {
+        "id": 79,
+        "name": "Sepaku",
+        "code": "64.09.04",
+        "city_code": "64.09",
+        "city_id": 6
+    },
+    {
+        "id": 80,
+        "name": "Long Bagun",
+        "code": "64.11.01",
+        "city_code": "64.11",
+        "city_id": 7
+    },
+    {
+        "id": 81,
+        "name": "Long Hubung",
+        "code": "64.11.02",
+        "city_code": "64.11",
+        "city_id": 7
+    },
+    {
+        "id": 82,
+        "name": "Laham",
+        "code": "64.11.03",
+        "city_code": "64.11",
+        "city_id": 7
+    },
+    {
+        "id": 83,
+        "name": "Long Apari",
+        "code": "64.11.04",
+        "city_code": "64.11",
+        "city_id": 7
+    },
+    {
+        "id": 84,
+        "name": "Long Pahangai",
+        "code": "64.11.05",
+        "city_code": "64.11",
+        "city_id": 7
+    },
+    {
+        "id": 85,
+        "name": "Balikpapan Timur",
+        "code": "64.71.01",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 86,
+        "name": "Balikpapan Barat",
+        "code": "64.71.02",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 87,
+        "name": "Balikpapan Utara",
+        "code": "64.71.03",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 88,
+        "name": "Balikpapan Tengah",
+        "code": "64.71.04",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 89,
+        "name": "Balikpapan Selatan",
+        "code": "64.71.05",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 90,
+        "name": "Balikpapan Kota",
+        "code": "64.71.06",
+        "city_code": "64.71",
+        "city_id": 8
+    },
+    {
+        "id": 91,
+        "name": "Palaran",
+        "code": "64.72.01",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 92,
+        "name": "Samarinda Seberang",
+        "code": "64.72.02",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 93,
+        "name": "Samarinda Ulu",
+        "code": "64.72.03",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 94,
+        "name": "Samarinda Ilir",
+        "code": "64.72.04",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 95,
+        "name": "Samarinda Utara",
+        "code": "64.72.05",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 96,
+        "name": "Sungai Kunjang",
+        "code": "64.72.06",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 97,
+        "name": "Sambutan",
+        "code": "64.72.07",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 98,
+        "name": "Sungai Pinang",
+        "code": "64.72.08",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 99,
+        "name": "Samarinda Kota",
+        "code": "64.72.09",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 100,
+        "name": "Loa Janan Ilir",
+        "code": "64.72.10",
+        "city_code": "64.72",
+        "city_id": 9
+    },
+    {
+        "id": 101,
+        "name": "Bontang Utara",
+        "code": "64.74.01",
+        "city_code": "64.74",
+        "city_id": 10
+    },
+    {
+        "id": 102,
+        "name": "Bontang Selatan",
+        "code": "64.74.02",
+        "city_code": "64.74",
+        "city_id": 10
+    },
+    {
+        "id": 103,
+        "name": "Bontang Barat",
+        "code": "64.74.03",
+        "city_code": "64.74",
+        "city_id": 10
+    }
+]

@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "name": "Paser",
+        "code": "64.01",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 2,
+        "name": "Kutai Kartanegara",
+        "code": "64.02",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 3,
+        "name": "Berau",
+        "code": "64.03",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 4,
+        "name": "Kutai Barat",
+        "code": "64.07",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 5,
+        "name": "Kutai Timur",
+        "code": "64.08",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 6,
+        "name": "Penajam Paser Utara",
+        "code": "64.09",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 7,
+        "name": "Mahakam Ulu",
+        "code": "64.11",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 8,
+        "name": "Balikpapan",
+        "code": "64.71",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 9,
+        "name": "Samarinda",
+        "code": "64.72",
+        "province_code": "64",
+        "province_id": 1
+    },
+    {
+        "id": 10,
+        "name": "Bontang",
+        "code": "64.74",
+        "province_code": "64",
+        "province_id": 1
+    }
+]
