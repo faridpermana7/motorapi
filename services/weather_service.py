@@ -1,7 +1,8 @@
 import requests
 from fastapi.responses import JSONResponse
 from fastapi import Response
-from model_master import Lokasi, cuaca_to_dict, parse_cuaca_matrix_for_listcuaca
+from model.model_master import Lokasi
+from utils.parsers import cuaca_to_dict, parse_cuaca_matrix_for_listcuaca
 
 class WeatherService:
     def __init__(self):
