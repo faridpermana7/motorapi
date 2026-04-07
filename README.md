@@ -18,4 +18,4 @@ Endpoints:
 - PUT /items/{id} — update item
 - DELETE /items/{id} — delete item
 
-Open interactive docs at http://127.0.0.1:8000/docs
+Open interactive docs at http://127.0.0.1:9999/docs

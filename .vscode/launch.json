@@ -1,14 +1,22 @@
 {
   "version": "0.2.0",
   "configurations": [
-    {
-      "name": "Run Uvicorn (launch)",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "uvicorn",
-      "args": ["main:app", "--reload", "--port", "8000"],
-      "justMyCode": true,
-      "subProcess": true
+      {
+        "name": "Debug FastAPI (no reload)",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": [
+          "main:app",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "9999"
+        ],
+        "envFile": "${workspaceFolder}/.env",
+        "subProcess": true,
+        "justMyCode": true,
+        "jinja": true
     }
   ]
 }
