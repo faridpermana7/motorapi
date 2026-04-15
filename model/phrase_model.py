@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .base_model import Base
 

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy.orm import relationship
@@ -29,6 +29,9 @@ class UserDTO(BaseModel):
     email: str
     password: Optional[str] = None  
 
+    class Config:
+        from_attributes = True
+
 class UserResponseDTO(BaseModel):
     id: int
     username: str
@@ -42,3 +45,8 @@ class UserResponseDTO(BaseModel):
 
     class Config:
         from_attributes = True  # Allows conversion from SQLAlchemy models
+        json_encoders = {
+            datetime: lambda v: (
+                v.replace(tzinfo=timezone.utc) if v.tzinfo is None else v.astimezone(timezone.utc)
+            ).isoformat().replace("+00:00", "Z")
+        }

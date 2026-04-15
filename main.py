@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import logins, phrases, users, weather, locations
+from routers import auth, logins, phrases, users, weather, locations
 from database_sqlalchemy import create_tables
 from dotenv import load_dotenv
 
@@ -24,6 +24,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(auth.router, prefix="/auth", tags=["authentication"])
 app.include_router(phrases.router)
 app.include_router(users.router)
 app.include_router(weather.router)
