@@ -42,7 +42,7 @@ async def get_item(item_id: int, service: ItemService = Depends(get_item_service
 async def update_item(item_id: int, data: ItemDTO, service: ItemService = Depends(get_item_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):
-    result = await service.update_item(item_id, data, updated_by=current_user.username)
+    result = await service.update_item(item_id, data, current_user.username)
     if not result:
         raise HTTPException(status_code=404, detail="Item not found")
     return result

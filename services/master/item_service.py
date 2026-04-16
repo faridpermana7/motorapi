@@ -15,14 +15,6 @@ async def check_enum_exists(session: AsyncSession, enum_id: int) -> bool:
     enum = result.scalars().first()
     return enum is not None
 
-
-def _normalize_datetime_to_utc(dt: datetime) -> datetime:
-    if dt is None:
-        return None
-    if dt.tzinfo is None:
-        return dt
-    return dt.astimezone(timezone.utc).replace(tzinfo=None)
-
 class ItemRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -38,7 +30,6 @@ class ItemRepository:
                 
         # 3. Create item entry
         entity = ItemEntity(**data.dict())
-        entity.time = _normalize_datetime_to_utc(entity.time)
         entity.created_at = datetime.utcnow()   
         entity.created_by = user
         self.session.add(entity)
@@ -86,15 +77,13 @@ class ItemRepository:
         if not entity:
             return None
         for key, value in data.dict().items():
-            if isinstance(value, datetime):
-                value = _normalize_datetime_to_utc(value)
             setattr(entity, key, value)
         entity.updated_at = datetime.utcnow()   
         entity.updated_by = user
         await self.session.commit()
         await self.session.refresh(entity)
         result = await self.session.execute(
-            select(ItemEntity).options(selectinload(ItemEntity.user)).where(ItemEntity.id == entity.id)
+            select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)).where(ItemEntity.id == entity.id)
         )
         entity = result.scalars().first()
         return ItemResponseDTO.from_orm(entity) if entity else None
@@ -138,7 +127,7 @@ class ItemService:
         return await self.repo.get_last_item_by_id(user_id)
 
     async def update_item(self, item_id: int, data: ItemDTO, user: str) -> Optional[ItemResponseDTO]:
-        return await self.repo.update_item(item_id, data, user=user)
+        return await self.repo.update_item(item_id, data, user)
 
     async def delete_soft_item(self, item_id: int, user: str) -> bool:
         return await self.repo.delete_soft_item(item_id, user)
