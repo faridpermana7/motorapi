@@ -4,7 +4,7 @@ from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
-from model.user_model import UserEntity, UserDTO, UserResponseDTO
+from model.admin.user_model import UserEntity, UserDTO, UserResponseDTO
 from passlib.context import CryptContext
 
 # Use Argon2 instead of bcrypt

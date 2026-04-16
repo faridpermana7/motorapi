@@ -1,7 +1,7 @@
 from fastapi import APIRouter
-from model.model_master import Provinces, Cities, Districts, Village
+from model.master.location_master import Provinces, Cities, Districts, Village
 from typing import List
-from services.location_service import LocationsService
+from services.master.location_service import LocationsService
 
 router = APIRouter()
 locations_service = LocationsService()

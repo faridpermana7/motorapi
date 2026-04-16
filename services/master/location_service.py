@@ -1,7 +1,7 @@
 from typing import List, Optional
 from pathlib import Path
 import json
-from model.model_master import Provinces, Cities, Districts, Village
+from model.master.location_master import Provinces, Cities, Districts, Village
 
 class LocationsService:
     def __init__(self):

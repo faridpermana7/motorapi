@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from enum import Enum
-from model.model_master import ListCuaca, VsText, WeatherDesc, Cuaca, WeatherDescEn
+from model.master.location_master import ListCuaca, VsText, WeatherDesc, Cuaca, WeatherDescEn
 
 
 def parse_datetime(s: str):

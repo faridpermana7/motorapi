@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, logins, phrases, users, weather, locations
-from database_sqlalchemy import create_tables
+from routers import auth
+from core.database_sqlalchemy import create_tables
 from dotenv import load_dotenv
+
+from routers.admin import logins, phrases, users
+from routers.master import enum_tables, items, locations, weather
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,6 +33,8 @@ app.include_router(users.router)
 app.include_router(weather.router)
 app.include_router(locations.router)
 app.include_router(logins.router)
+app.include_router(enum_tables.router)
+app.include_router(items.router)
 
 if __name__ == "__main__":
     import uvicorn

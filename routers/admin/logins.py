@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
-from model.login_model import LoginDTO, LoginResponseDTO
+from model.admin.login_model import LoginDTO, LoginResponseDTO
 from model.auth_model import UserInDB
 from typing import List
-from database_sqlalchemy import get_db
+from core.database_sqlalchemy import get_db
 from services.auth_service import get_current_user
-from services.login_service import LoginService, LoginRepository
+from services.admin.login_service import LoginService, LoginRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
@@ -55,7 +55,6 @@ async def delete_soft_login(login_id: int, service: LoginService = Depends(get_l
     if not success:
         raise HTTPException(status_code=404, detail="Login not found")
     return {"message": "Login deleted"}
-
 
 @router.delete("/logins/{login_id}")
 async def delete_login(login_id: int, service: LoginService = Depends(get_login_service),

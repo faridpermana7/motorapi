@@ -6,8 +6,8 @@ from sqlalchemy.future import select
 from typing import List, Optional
 
 from sqlalchemy.orm import selectinload
-from model.login_model import LoginEntity, LoginDTO, LoginResponseDTO
-from model.user_model import UserEntity
+from model.admin.login_model import LoginEntity, LoginDTO, LoginResponseDTO
+from model.admin.user_model import UserEntity
 
 
 async def check_user_exists(session: AsyncSession, user_id: int) -> bool:

@@ -2,11 +2,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 import os
 from typing import AsyncGenerator
+from model.admin import login_model, phrase_model
 from model.base_model import Base
 from dotenv import load_dotenv
 
 # Import all models to ensure they are registered with Base
-from model import login_model, user_model, phrase_model
+from model.admin import user_model
 
 load_dotenv()
 

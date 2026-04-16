@@ -6,8 +6,8 @@ from typing import Optional
 
 from sqlalchemy.orm import relationship
 
-from model.user_model import UserDTO
-from .base_model import Base
+from model.admin.user_model import UserDTO
+from ..base_model import Base
 
 # Login Entity (Database Model)
 class LoginEntity(Base):

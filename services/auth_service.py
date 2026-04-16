@@ -12,11 +12,11 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from database_sqlalchemy import get_db
+from core.database_sqlalchemy import get_db
 from model.auth_model import UserLogin, Token, TokenData, UserInDB
-from model.login_model import LoginDTO
-from model.user_model import UserEntity
-from services.login_service import LoginRepository
+from model.admin.login_model import LoginDTO
+from model.admin.user_model import UserEntity
+from services.admin.login_service import LoginRepository
 
 # JWT configuration
 SECRET_KEY = os.getenv("SECRET_KEY")
