@@ -18,10 +18,11 @@ class UserEntity(Base):
     created_by = Column(String)
     updated_at = Column(DateTime)
     updated_by = Column(String)
-    deleted_at = Column(DateTime)
+    deleted_at = Column(DateTime) 
     
-    # relationship to logins
+    # Relationship from others to this
     logins = relationship("LoginEntity", back_populates="user")
+    user_transactions = relationship("TransactionEntity", back_populates="cashier")
 
 # User DTO (API Model)
 class UserDTO(BaseModel):

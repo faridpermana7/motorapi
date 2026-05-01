@@ -3,7 +3,7 @@ from model.master.enum_table_model import EnumTableDTO, EnumTableResponseDTO
 from typing import List
 from core.database_sqlalchemy import get_db
 from model.auth_model import UserInDB
-from services.master.enum_table_service import EnumTableService, EnumTableRepository
+from services.transaction.enum_table_service import EnumTableService, EnumTableRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from services.auth_service import get_current_user
 

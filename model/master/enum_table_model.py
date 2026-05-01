@@ -22,6 +22,7 @@ class EnumTableEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
     
+    # Relationship from others to this
     uom_items = relationship(ItemEntity, back_populates="uom", foreign_keys=[ItemEntity.uom_id])
     category_items = relationship(ItemEntity, back_populates="category", foreign_keys=[ItemEntity.category_id])
 

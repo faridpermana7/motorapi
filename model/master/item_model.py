@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy.orm import relationship
+
+from model.transaction.transaction_item_model import TransactionItemEntity
 from ..base_model import Base
 
 # Item Entity (Database Model)
@@ -30,8 +32,13 @@ class ItemEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
 
+    # ForeignKey
     uom = relationship("EnumTableEntity", back_populates="uom_items", foreign_keys=[uom_id])
     category = relationship("EnumTableEntity", back_populates="category_items", foreign_keys=[category_id])
+
+    
+    # Relationship from others to this
+    item_transaction_items = relationship(TransactionItemEntity, back_populates="item", foreign_keys=[TransactionItemEntity.item_id])
 
     @property
     def uom_name(self) -> str:

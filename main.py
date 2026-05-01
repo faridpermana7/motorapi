@@ -1,3 +1,4 @@
+from asyncpg import transaction
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import auth
@@ -6,6 +7,7 @@ from dotenv import load_dotenv
 
 from routers.admin import logins, phrases, users
 from routers.master import enum_tables, items, locations, weather
+from routers.transaction import cashier_logs, transaction_items, transactions
 
 # Load environment variables from .env file
 load_dotenv()
@@ -28,13 +30,22 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
+
+# Admin
+app.include_router(logins.router)
 app.include_router(phrases.router)
 app.include_router(users.router)
+
+# Master
 app.include_router(weather.router)
 app.include_router(locations.router)
-app.include_router(logins.router)
 app.include_router(enum_tables.router)
 app.include_router(items.router)
+
+# Transaction
+app.include_router(transactions.router)
+app.include_router(transaction_items.router)
+app.include_router(cashier_logs.router)
 
 if __name__ == "__main__":
     import uvicorn
