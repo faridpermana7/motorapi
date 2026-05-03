@@ -1,6 +1,8 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
+
+from model.admin.menu_model import MenuTreeDTO
 
 # Authentication models
 class UserLogin(BaseModel):
@@ -10,6 +12,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    menus: List[MenuTreeDTO] = []  # Include menu tree in the token response  
 
 class TokenData(BaseModel):
     username: Optional[str] = None

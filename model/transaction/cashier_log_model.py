@@ -23,7 +23,7 @@ class CashierLogEntity(Base):
     created_at = Column(DateTime)
     created_by = Column(String)
  
-    # ForeignKey
+    # Foreign-key constraints:
     transaction = relationship("TransactionEntity", back_populates="transaction_cashier_logs", foreign_keys=[transaction_id])
 
     # @property

@@ -20,9 +20,8 @@ class UserEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime) 
     
-    # Relationship from others to this
+    # Referenced by:
     logins = relationship("LoginEntity", back_populates="user")
-    user_transactions = relationship("TransactionEntity", back_populates="cashier")
 
 # User DTO (API Model)
 class UserDTO(BaseModel):

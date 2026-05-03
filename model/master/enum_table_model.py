@@ -5,6 +5,9 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy.orm import relationship
+ 
+from model.master.customer_model import CustomerEntity
+from model.transaction.transaction_model import TransactionEntity
 
 from ..base_model import Base
 from .item_model import ItemEntity
@@ -22,9 +25,12 @@ class EnumTableEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
     
-    # Relationship from others to this
+    # Referenced by:
     uom_items = relationship(ItemEntity, back_populates="uom", foreign_keys=[ItemEntity.uom_id])
     category_items = relationship(ItemEntity, back_populates="category", foreign_keys=[ItemEntity.category_id])
+    tax_transactions = relationship(TransactionEntity, back_populates="tax", foreign_keys=[TransactionEntity.tax_id])
+    tax_transactions = relationship(TransactionEntity, back_populates="tax", foreign_keys=[TransactionEntity.tax_id])
+    type_customers = relationship(CustomerEntity, back_populates="type", foreign_keys=[CustomerEntity.type_id])
 
 # Enum Table DTO (API Model)
 class EnumTableDTO(BaseModel):

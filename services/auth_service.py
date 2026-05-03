@@ -9,6 +9,8 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from dotenv import load_dotenv
 
+from services.admin.menu_service import MenuRepository
+
 # Load environment variables
 load_dotenv()
 
@@ -122,8 +124,11 @@ class AuthService:
         )
         login_repo = LoginRepository(self.session)
         await login_repo.create_login(login_data, user=user.username)
+        
+        menu_repo = MenuRepository(self.session)
+        menus = await menu_repo.get_menu_tree()
 
-        return Token(access_token=access_token, token_type="bearer")
+        return Token(access_token=access_token, token_type="bearer", menus=menus)
 
     async def logout(self, user: UserInDB) -> bool:
         login_repo = LoginRepository(self.session)

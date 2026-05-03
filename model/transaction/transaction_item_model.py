@@ -25,7 +25,7 @@ class TransactionItemEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
  
-    # ForeignKey
+    # Foreign-key constraints:
     item = relationship("ItemEntity", back_populates="item_transaction_items", foreign_keys=[item_id])
     transaction = relationship("TransactionEntity", back_populates="transaction_transaction_items", foreign_keys=[transaction_id])
 

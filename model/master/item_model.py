@@ -32,12 +32,11 @@ class ItemEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
 
-    # ForeignKey
+    # Foreign-key constraints:
     uom = relationship("EnumTableEntity", back_populates="uom_items", foreign_keys=[uom_id])
     category = relationship("EnumTableEntity", back_populates="category_items", foreign_keys=[category_id])
-
     
-    # Relationship from others to this
+    # Referenced by:
     item_transaction_items = relationship(TransactionItemEntity, back_populates="item", foreign_keys=[TransactionItemEntity.item_id])
 
     @property

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Numeric
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from datetime import datetime, timezone
@@ -17,8 +17,11 @@ class TransactionEntity(Base):
     __tablename__ = "transactions"
 
     id = Column(Integer, primary_key=True, index=True) 
-    cashier_id = Column(Integer, ForeignKey("users.id"))  
+    customer_id = Column(Integer, ForeignKey("customers.id"))  
     payment_method = Column(String(50))
+    discount = Column(Numeric(12, 2))
+    tax_id = Column(Integer, ForeignKey("enum_tables.id"))
+    tax_value = Column(Numeric(12, 2))
     total = Column(Numeric(12, 2))
     
     created_at = Column(DateTime)
@@ -27,38 +30,41 @@ class TransactionEntity(Base):
     updated_by = Column(String)
     deleted_at = Column(DateTime)
 
-    # ForeignKey
-    cashier = relationship("UserEntity", back_populates="user_transactions", foreign_keys=[cashier_id]) 
+    # Foreign-key constraints:
+    customer = relationship("CustomerEntity", back_populates="customer_transactions", foreign_keys=[customer_id]) 
+    tax = relationship("EnumTableEntity", back_populates="tax_transactions", foreign_keys=[tax_id])
     
-    # Relationship from others to this
+    # Referenced by:
     transaction_cashier_logs = relationship(CashierLogEntity, back_populates="transaction", foreign_keys=[CashierLogEntity.transaction_id])
     transaction_transaction_items = relationship(TransactionItemEntity, back_populates="transaction", foreign_keys=[TransactionItemEntity.transaction_id])
 
     @property
-    def cashier_name(self) -> str:
-        return self.cashier.name if self.cashier else None
+    def customer_name(self) -> str:
+        return self.customer.name if self.customer else None
+
+    @property
+    def tax_name(self) -> str:
+        return self.tax.name if self.tax else None
 
 # Transaction DTO (API Model)
 class TransactionDTO(BaseModel):
-    cashier_id: int
-    payment_method: str
-
-    name: Optional[str] = None
-    code: Optional[str] = None
-    barcode: Optional[str] = None
-    brand: Optional[str] = None
-    description: Optional[str] = None
-    minimum_stock: int = 0
-    stock: int = 0
-    cost_price: Decimal = Decimal("0.00")
-    selling_price: Decimal = Decimal("0.00")
+    customer_id: int
+    payment_method: str = "cash"
+    discount: Decimal = Decimal("0.00")
+    customer_id: int
+    tax_id: int
+    tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
 
 
 class TransactionResponseDTO(BaseModel):
     id: int
-    cashier_id: int
-    payment_method: str
+    customer_id: int
+    payment_method: str = "cash"
+    discount: Decimal = Decimal("0.00")
+    customer_id: int
+    tax_id: int
+    tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
     
     created_at: Optional[datetime]
