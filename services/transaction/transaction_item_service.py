@@ -54,11 +54,14 @@ class TransactionItemRepository:
         entities = result.scalars().all()
         return [TransactionItemResponseDTO.from_orm(e) for e in entities]
 
-    async def get_transaction_item_by_id(self, transaction_item_id: int) -> Optional[TransactionItemResponseDTO]: 
-        query = select(TransactionItemEntity).options(selectinload(TransactionItemEntity.transaction), selectinload(TransactionItemEntity.item)).where(TransactionItemEntity.deleted_at == null())
+    async def get_transaction_item_by_transaction_id(self, transaction_id: int) -> Optional[TransactionItemResponseDTO]: 
+        query = select(TransactionItemEntity).options(selectinload(TransactionItemEntity.transaction), 
+                                                      selectinload(TransactionItemEntity.item)
+                                                      ).where(TransactionItemEntity.deleted_at == null()
+                                                              ).where(TransactionItemEntity.transaction_id == transaction_id)
         result = await self.session.execute(query)
-        entity = result.scalars().first()
-        return TransactionItemResponseDTO.from_orm(entity) if entity else None
+        entities = result.scalars().all()
+        return [TransactionItemResponseDTO.from_orm(e) for e in entities]
 
     async def update_transaction_item(self, transaction_item_id: int, data: TransactionItemDTO, user: str) -> Optional[TransactionItemResponseDTO]:
         
@@ -120,8 +123,8 @@ class TransactionItemService:
     async def get_all_transaction_items(self) -> List[TransactionItemResponseDTO]:
         return await self.repo.get_all_transaction_items()
 
-    async def get_transaction_item_by_id(self, transaction_item_id: int) -> Optional[TransactionItemResponseDTO]:
-        return await self.repo.get_transaction_item_by_id(transaction_item_id)
+    async def get_transaction_item_by_transaction_id(self, transaction_id: int) -> Optional[TransactionItemResponseDTO]:
+        return await self.repo.get_transaction_item_by_transaction_id(transaction_id)
 
     async def update_transaction_item(self, transaction_item_id: int, data: TransactionItemDTO, user: str) -> Optional[TransactionItemResponseDTO]:
         return await self.repo.update_transaction_item(transaction_item_id, data, user)

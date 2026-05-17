@@ -29,11 +29,11 @@ async def list_transaction_items(service: TransactionItemService = Depends(get_t
                       ):
     return await service.get_all_transaction_items()
 
-@router.get("/transaction_items/{transaction_item_id}", response_model=TransactionItemResponseDTO)
-async def get_transaction_item(transaction_item_id: int, service: TransactionItemService = Depends(get_transaction_item_service),
+@router.get("/transaction_items/{transaction_id}", response_model=List[TransactionItemResponseDTO])
+async def get_transaction_item(transaction_id: int, service: TransactionItemService = Depends(get_transaction_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
-    result = await service.get_transaction_item_by_id(transaction_item_id)
+    result = await service.get_transaction_item_by_transaction_id(transaction_id)
     if not result:
         raise HTTPException(status_code=404, detail="TransactionItem not found")
     return result

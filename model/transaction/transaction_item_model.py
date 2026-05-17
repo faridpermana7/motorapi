@@ -1,5 +1,5 @@
 from decimal import Decimal
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Numeric
+from sqlalchemy import Boolean, Column, Computed, ForeignKey, Integer, String, DateTime, Text, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from datetime import datetime, timezone
@@ -17,7 +17,7 @@ class TransactionItemEntity(Base):
     item_id = Column(Integer, ForeignKey("items.id"))
     quantity = Column(Integer)
     price = Column(Numeric(12, 2))
-    sub_total = Column(Numeric(12, 2))
+    subtotal = Column(Numeric(12, 2), Computed("quantity * price"), nullable=False)
     
     created_at = Column(DateTime)
     created_by = Column(String)
@@ -32,22 +32,34 @@ class TransactionItemEntity(Base):
     @property
     def item_name(self) -> str:
         return self.item.name if self.item else None
+    @property
+    def item_code(self) -> str:
+        return self.item.code if self.item else None
+    @property
+    def item_barcode(self) -> str:
+        return self.item.barcode if self.item else None
+    @property
+    def item_stock(self) -> int:
+        return self.item.stock if self.item else None 
 
 # Transaction Item DTO (API Model)
 class TransactionItemDTO(BaseModel):
-    transaction_id: int
+    # no subtotal, no transaction_id
     item_id: int
     quantity: int
-    price: Decimal = Decimal("0.00")
-    sub_total: Decimal = Decimal("0.00") 
+    price: Decimal = Decimal("0.00") 
 
 class TransactionItemResponseDTO(BaseModel):
     id: int
     transaction_id: int
     item_id: int
+    item_name: Optional[str] = None
+    item_stock: int
+    item_code: Optional[str] = None
+    item_barcode: Optional[str] = None
     quantity: int
     price: Decimal = Decimal("0.00")
-    sub_total: Decimal = Decimal("0.00")
+    subtotal: Decimal   # ✅ DB fills this
 
     created_at: Optional[datetime]
     created_by: Optional[str]

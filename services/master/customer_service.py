@@ -3,6 +3,8 @@ from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
+
+from sqlalchemy.orm import selectinload
 from model.master.customer_model import CustomerEntity, CustomerDTO, CustomerResponseDTO  
 
 class CustomerRepository:
@@ -10,13 +12,13 @@ class CustomerRepository:
         self.session = session
 
     async def get_all_customers(self) -> List[CustomerResponseDTO]:
-        query = select(CustomerEntity).where(CustomerEntity.deleted_at == None)
+        query = select(CustomerEntity).options(selectinload(CustomerEntity.type)).where(CustomerEntity.deleted_at == None)
         result = await self.session.execute(query)
         entities = result.scalars().all()
         return [CustomerResponseDTO.from_orm(e) for e in entities]
 
     async def get_customer_by_id(self, customer_id: int) -> Optional[CustomerResponseDTO]:
-        query = select(CustomerEntity).where(CustomerEntity.deleted_at == None).where(CustomerEntity.id == customer_id)
+        query = select(CustomerEntity).options(selectinload(CustomerEntity.type)).where(CustomerEntity.deleted_at == None).where(CustomerEntity.id == customer_id)
         result = await self.session.execute(query)
         entity = result.scalars().first()
         return CustomerResponseDTO.from_orm(entity) if entity else None
@@ -28,7 +30,7 @@ class CustomerRepository:
         self.session.add(entity)
         await self.session.commit()
         await self.session.refresh(entity)
-        return CustomerResponseDTO.from_orm(entity)
+        return await self.get_customer_by_id(entity.id)
     
     async def update_customer(self, customer_id: int, data: CustomerDTO, user: str) -> Optional[CustomerResponseDTO]:
         query = select(CustomerEntity).where(CustomerEntity.deleted_at == None).where(CustomerEntity.id == customer_id)
@@ -43,7 +45,7 @@ class CustomerRepository:
         entity.updated_at = datetime.utcnow()
         await self.session.commit()
         await self.session.refresh(entity)
-        return CustomerResponseDTO.from_orm(entity)
+        return await self.get_customer_by_id(entity.id)
 
     async def delete_soft_customer(self, customer_id: int, user: str) -> bool:
         query = select(CustomerEntity).where(CustomerEntity.deleted_at == None).where(CustomerEntity.id == customer_id)

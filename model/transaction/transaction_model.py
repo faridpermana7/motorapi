@@ -3,11 +3,11 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, N
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from datetime import datetime, timezone
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy.orm import relationship
 
-from model.transaction.transaction_item_model import TransactionItemEntity
+from model.transaction.transaction_item_model import TransactionItemDTO, TransactionItemEntity
 from ..base_model import Base
 
 from .cashier_log_model import CashierLogEntity
@@ -20,7 +20,7 @@ class TransactionEntity(Base):
     customer_id = Column(Integer, ForeignKey("customers.id"))  
     payment_method = Column(String(50))
     discount = Column(Numeric(12, 2))
-    tax_id = Column(Integer, ForeignKey("enum_tables.id"))
+    tax_id = Column(Integer, ForeignKey("enum_tables.id"), nullable=True)
     tax_value = Column(Numeric(12, 2))
     total = Column(Numeric(12, 2))
     
@@ -52,20 +52,24 @@ class TransactionDTO(BaseModel):
     payment_method: str = "cash"
     discount: Decimal = Decimal("0.00")
     customer_id: int
-    tax_id: int
+    tax_id: Optional[int] = None
     tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
+    items: Optional[List[TransactionItemDTO]] = None
 
 
 class TransactionResponseDTO(BaseModel):
     id: int
     customer_id: int
+    customer_name: Optional[str]
     payment_method: str = "cash"
     discount: Decimal = Decimal("0.00")
     customer_id: int
-    tax_id: int
+    tax_id: Optional[int] = None
+    tax_name: Optional[str]
     tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
+    items: Optional[List[TransactionItemDTO]] = None
     
     created_at: Optional[datetime]
     created_by: Optional[str]

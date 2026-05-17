@@ -1,10 +1,12 @@
 from asyncpg import transaction
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth
-from core.database_sqlalchemy import create_tables
-from dotenv import load_dotenv
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
+from routers import auth 
+from dotenv import load_dotenv 
 from routers.admin import logins, menus, phrases, users
 from routers.master import customers, enum_tables, items, locations, weather
 from routers.transaction import cashier_logs, transaction_items, transactions
@@ -18,15 +20,27 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost",
-        "http://127.0.0.1",
-        "http://127.0.0.1:8000",
         "http://127.0.0.1:8080",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc: RequestValidationError):
+    errors = []
+    for err in exc.errors():
+        errors.append({
+            "field": ".".join(str(loc) for loc in err["loc"]),
+            "message": err["msg"],
+            "type": err["type"]
+        })
+    return JSONResponse(
+        status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": errors}
+    )
 
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
