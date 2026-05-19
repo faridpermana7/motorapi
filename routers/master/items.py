@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from model.master.item_model import ItemDTO, ItemResponseDTO
+from model.master.item_model import ItemDTO, ItemImportDTO, ItemResponseDTO
 from model.auth_model import UserInDB
 from typing import List
 from core.database_sqlalchemy import get_db
@@ -22,6 +22,15 @@ async def create_item(data: ItemDTO, service: ItemService = Depends(get_item_ser
     if not result:
         raise HTTPException(status_code=400, detail="Failed to create item")
     return result
+
+@router.post("/items/import")
+async def bulk_import_items(data: list[ItemImportDTO], service: ItemService = Depends(get_item_service),
+                            current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
+                            ):
+    result = await service.bulk_import_items(data, user=current_user.username)
+    if not result:
+        raise HTTPException(status_code=400, detail="Failed to import items")
+    return {"status": "success", "count": len(result)}
 
 @router.get("/items", response_model=List[ItemResponseDTO])
 async def list_items(service: ItemService = Depends(get_item_service),

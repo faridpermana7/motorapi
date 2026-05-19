@@ -28,6 +28,7 @@ ALGORITHM = os.getenv("ALGORITHM")
 if not ALGORITHM:
     raise ValueError("ALGORITHM environment variable is required")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or 30)  # Token expires in 30 minutes
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS") or 7)  # Token expires in 7 days
 
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
@@ -74,6 +75,15 @@ class AuthService:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
+    
+    
+    def create_refresh_token(self, data: dict, expires_delta: Optional[timedelta] = None):
+        """Refresh JWT access token."""
+        to_encode = data.copy()
+        expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        to_encode.update({"exp": expire})
+        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt  
 
     async def get_current_user(self, token: str) -> Optional[UserInDB]:
         """Get current user from JWT token."""

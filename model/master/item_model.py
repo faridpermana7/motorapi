@@ -63,6 +63,19 @@ class ItemDTO(BaseModel):
     cost_price: Decimal = Decimal("0.00")
     selling_price: Decimal = Decimal("0.00")
 
+class ItemImportDTO(BaseModel):
+    uom_id: int
+    category_id: int
+    code: str | None = None
+    name: str
+    barcode: str | None = None 
+    brand: str | None = None
+    description: str | None = None 
+    minimum_stock: int | None = 0
+    stock: int | None = 0
+    cost_price: float | None = 0.0
+    selling_price: float | None = 0.0
+
 
 class ItemResponseDTO(BaseModel):
     id: int
