@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
+
 
 from fastapi import HTTPException
-from sqlalchemy import null 
+from sqlalchemy import extract, func, null 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
@@ -9,11 +10,21 @@ from typing import List, Optional
 from sqlalchemy.orm import selectinload
 from model.master.item_model import ItemEntity
 from model.transaction.transaction_item_model import TransactionItemEntity
-from model.transaction.transaction_model import TransactionEntity, TransactionDTO, TransactionResponseDTO 
+from model.transaction.transaction_model import TransactionDashboardPerDayDTO, TransactionEntity, TransactionDTO, TransactionResponseDTO 
 
 class TransactionRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    
+    @staticmethod
+    def subtract_months(date: datetime, months: int) -> datetime:
+        year = date.year
+        month = date.month - months
+        while month <= 0:
+            month += 12
+            year -= 1
+        return datetime(year, month, 1)
 
     async def create_transaction(self, data: TransactionDTO, user: str = None
                                  ) -> Optional[TransactionResponseDTO]:     
@@ -84,6 +95,102 @@ class TransactionRepository:
         result = await self.session.execute(query)
         entities = result.scalars().all()
         return [TransactionResponseDTO.from_orm(e) for e in entities]
+    
+    async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
+        # 1. Find start (Monday) and end (Sunday) of current week
+        today = datetime.utcnow().date()
+        # Go back to last Monday (6 days ago)
+        start_of_week = today - timedelta(days=6)
+        end_of_week = datetime.combine(today, datetime.max.time())    # inclusive
+
+
+        # 2. Query transactions within this week
+        query = (
+            select(
+                func.date(TransactionEntity.created_at).label("day"),
+                func.sum(TransactionItemEntity.quantity).label("items_sold"),   # total products sold
+                func.sum(TransactionEntity.total).label("sales_total")          # total revenue
+            ) 
+            .join(TransactionItemEntity, TransactionEntity.id == TransactionItemEntity.transaction_id)
+            .where(TransactionEntity.deleted_at == None)
+            .where(TransactionEntity.created_at >= start_of_week)
+            .where(TransactionEntity.created_at <= end_of_week)
+            .group_by(func.date(TransactionEntity.created_at))
+            .order_by(func.date(TransactionEntity.created_at))
+        )
+
+        result = await self.session.execute(query)
+        rows = result.all()
+
+        
+        # 3. Build labels and data arrays for each day in the week
+        labels = []
+        month_labels = []
+        month_totals = []
+        items_sold = []
+        totals = []
+
+        for i in range(7):
+            day = start_of_week + timedelta(days=i)
+            labels.append(day.strftime("%A"))  # Mon → Sun
+            match = next((r for r in rows if r.day == day), None)
+            items_sold.append(int(match.items_sold) if match and match.items_sold else 0)
+            totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
+
+        months_back = 6  # configurable
+        start_month = self.subtract_months(datetime(today.year, today.month, 1), months_back-1) # e.g. if today is June and months_back=6, start_month will be January 1st
+        first_day_this_month = datetime(today.year, today.month, 1) 
+
+        # First day of next month
+        if today.month == 12:
+            first_day_this_month = datetime(today.year + 1, 1, 1)
+        else:
+            first_day_next_month = datetime(today.year, today.month + 1, 1)
+
+        # Last day of current month
+        end_month = datetime.combine(first_day_next_month - timedelta(days=1), datetime.max.time()) 
+
+        monthly_query = (
+            select(
+                extract("year", TransactionEntity.created_at).label("year"),
+                extract("month", TransactionEntity.created_at).label("month"),
+                func.sum(TransactionEntity.total).label("sales_total")
+            )
+            .where(TransactionEntity.deleted_at == None)
+            .where(TransactionEntity.created_at >= start_month)
+            .where(TransactionEntity.created_at <= end_month)
+            .group_by(extract("year", TransactionEntity.created_at), extract("month", TransactionEntity.created_at))
+            .order_by(extract("year", TransactionEntity.created_at), extract("month", TransactionEntity.created_at))
+        )
+        monthly_result = await self.session.execute(monthly_query)
+        monthly_rows = monthly_result.all()
+        
+        cur = start_month
+        end = datetime(today.year, today.month, 1) 
+        while cur <= end:
+            month_labels.append(cur.strftime("%B"))
+            match = next(
+                (r for r in monthly_rows if int(r.month) == cur.month and int(r.year) == cur.year),
+                None
+            )
+            month_totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
+
+            # move to next month
+            if cur.month == 12:
+                cur = datetime(cur.year + 1, 1, 1)
+            else:
+                cur = datetime(cur.year, cur.month + 1, 1)
+
+
+            
+        return TransactionDashboardPerDayDTO(
+            items_sold=items_sold,
+            totals=totals,
+            labels=labels,
+            month_labels=month_labels,
+            month_totals=month_totals
+        )
+        
 
     async def get_transaction_by_id(self, transaction_id: int) -> Optional[TransactionResponseDTO]: 
         query = select(TransactionEntity).options(selectinload(TransactionEntity.customer), 
@@ -242,6 +349,9 @@ class TransactionService:
 
     async def get_all_transactions(self) -> List[TransactionResponseDTO]:
         return await self.repo.get_all_transactions()
+
+    async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
+        return await self.repo.get_dashboard_data()
 
     async def get_transaction_by_id(self, transaction_id: int) -> Optional[TransactionResponseDTO]:
         return await self.repo.get_transaction_by_id(transaction_id)

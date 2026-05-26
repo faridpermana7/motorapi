@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from model.transaction.transaction_model import TransactionDTO, TransactionResponseDTO
+from model.transaction.transaction_model import TransactionDTO, TransactionDashboardPerDayDTO, TransactionResponseDTO
 from model.auth_model import UserInDB
 from typing import List
 from core.database_sqlalchemy import get_db
@@ -27,7 +27,22 @@ async def create_transaction(data: TransactionDTO, service: TransactionService =
 async def list_transactions(service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
-    return await service.get_all_transactions()
+    try:
+        res = await service.get_all_transactions()
+        return res
+    except HTTPException as e:
+        # re-raise FastAPI HTTPExceptions so they propagate correctly
+        raise e
+    except Exception as e:
+        # catch any other unexpected errors
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+
+@router.get("/transactions/dashboard/perday", response_model=TransactionDashboardPerDayDTO)
+async def get_dashboard_data(service: TransactionService = Depends(get_transaction_service),
+                      current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
+                      ):
+    return await service.get_dashboard_data()
 
 @router.get("/transactions/{transaction_id}", response_model=TransactionResponseDTO)
 async def get_transaction(transaction_id: int, service: TransactionService = Depends(get_transaction_service),

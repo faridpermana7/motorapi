@@ -58,6 +58,14 @@ class TransactionDTO(BaseModel):
     items: Optional[List[TransactionItemDTO]] = None
 
 
+    
+class TransactionDashboardPerDayDTO(BaseModel):
+    labels: List[str]
+    month_labels: Optional[List[str]] = None
+    month_totals: Optional[List[Decimal]] = None
+    items_sold: Optional[List[int]] = None   # number of products sold per day
+    totals: Optional[List[Decimal]] = None   # total revenue per day
+
 class TransactionResponseDTO(BaseModel):
     id: int
     customer_id: int
@@ -76,7 +84,6 @@ class TransactionResponseDTO(BaseModel):
     updated_at: Optional[datetime]
     updated_by: Optional[str]
     deleted_at: Optional[datetime]
-
 
     class Config:
         from_attributes = True  # Allows conversion from SQLAlchemy models
