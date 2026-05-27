@@ -7,7 +7,7 @@ from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
 from routers import auth 
 from dotenv import load_dotenv 
-from routers.admin import logins, menus, phrases, users
+from routers.admin import configurations, logins, menus, phrases, users
 from routers.master import customers, enum_tables, items, locations, weather
 from routers.transaction import cashier_logs, transaction_items, transactions
 
@@ -50,6 +50,7 @@ app.include_router(logins.router)
 app.include_router(phrases.router)
 app.include_router(users.router)
 app.include_router(menus.router)
+app.include_router(configurations.router)
 
 # Master
 app.include_router(weather.router)
