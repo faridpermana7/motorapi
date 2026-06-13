@@ -9,8 +9,9 @@ from typing import List, Optional
 
 from sqlalchemy.orm import selectinload
 from model.master.item_model import ItemEntity
+from model.admin.configuration_model import ConfigurationEntity
 from model.transaction.transaction_item_model import TransactionItemEntity
-from model.transaction.transaction_model import TransactionDashboardPerDayDTO, TransactionEntity, TransactionDTO, TransactionResponseDTO 
+from model.transaction.transaction_model import TransactionDashboardPerDayDTO, TransactionEntity, TransactionDTO, TransactionResponseDTO, TopProductDTO 
 
 class TransactionRepository:
     def __init__(self, session: AsyncSession):
@@ -97,6 +98,11 @@ class TransactionRepository:
         return [TransactionResponseDTO.from_orm(e) for e in entities]
     
     async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
+        #get configurable number of months back (e.g. 6 months) for monthly data in dashboard
+        query = select(ConfigurationEntity.value).where(ConfigurationEntity.attribute == "total_per_month").limit(1)
+        result = await self.session.execute(query)
+        months_back = int(result.scalar() or 6)  # default to 6 if not set
+
         # 1. Find start (Monday) and end (Sunday) of current week
         today = datetime.utcnow().date()
         # Go back to last Monday (6 days ago)
@@ -136,8 +142,7 @@ class TransactionRepository:
             match = next((r for r in rows if r.day == day), None)
             items_sold.append(int(match.items_sold) if match and match.items_sold else 0)
             totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
-
-        months_back = 6  # configurable
+ 
         start_month = self.subtract_months(datetime(today.year, today.month, 1), months_back-1) # e.g. if today is June and months_back=6, start_month will be January 1st
         first_day_this_month = datetime(today.year, today.month, 1) 
 
@@ -181,6 +186,69 @@ class TransactionRepository:
             else:
                 cur = datetime(cur.year, cur.month + 1, 1)
 
+        # 4. Get top 5 products by quantity sold
+        top_qty_query = (
+            select(
+                ItemEntity.id.label("item_id"),
+                ItemEntity.name.label("name"),
+                ItemEntity.code.label("code"),
+                func.sum(TransactionItemEntity.quantity).label("quantity_sold"),
+                func.sum(TransactionEntity.total).label("total_revenue"),
+                func.avg(TransactionItemEntity.price).label("average_price")
+            )
+            .join(TransactionItemEntity, ItemEntity.id == TransactionItemEntity.item_id)
+            .join(TransactionEntity, TransactionEntity.id == TransactionItemEntity.transaction_id)
+            .where(TransactionEntity.deleted_at == None)
+            .group_by(ItemEntity.id, ItemEntity.name, ItemEntity.code)
+            .order_by(func.sum(TransactionItemEntity.quantity).desc())
+            .limit(5)
+        )
+        top_qty_result = await self.session.execute(top_qty_query)
+        top_qty_rows = top_qty_result.all()
+
+        # Convert to TopProductDTO
+        top_products_by_quantity = []
+        for row in top_qty_rows:
+            top_products_by_quantity.append(TopProductDTO(
+                item_id=row.item_id,
+                name=row.name,
+                code=row.code,
+                quantity_sold=int(row.quantity_sold) if row.quantity_sold else 0,
+                total_revenue=float(row.total_revenue) if row.total_revenue else 0.0,
+                average_price=float(row.average_price) if row.average_price else 0.0
+            ))
+
+        # 5. Get top 5 products by revenue
+        top_revenue_query = (
+            select(
+                ItemEntity.id.label("item_id"),
+                ItemEntity.name.label("name"),
+                ItemEntity.code.label("code"),
+                func.sum(TransactionItemEntity.quantity).label("quantity_sold"),
+                func.sum(TransactionEntity.total).label("total_revenue"),
+                func.avg(TransactionItemEntity.price).label("average_price")
+            )
+            .join(TransactionItemEntity, ItemEntity.id == TransactionItemEntity.item_id)
+            .join(TransactionEntity, TransactionEntity.id == TransactionItemEntity.transaction_id)
+            .where(TransactionEntity.deleted_at == None)
+            .group_by(ItemEntity.id, ItemEntity.name, ItemEntity.code)
+            .order_by(func.sum(TransactionEntity.total).desc())
+            .limit(5)
+        )
+        top_revenue_result = await self.session.execute(top_revenue_query)
+        top_revenue_rows = top_revenue_result.all()
+
+        # Convert to TopProductDTO
+        top_products_by_revenue = []
+        for row in top_revenue_rows:
+            top_products_by_revenue.append(TopProductDTO(
+                item_id=row.item_id,
+                name=row.name,
+                code=row.code,
+                quantity_sold=int(row.quantity_sold) if row.quantity_sold else 0,
+                total_revenue=float(row.total_revenue) if row.total_revenue else 0.0,
+                average_price=float(row.average_price) if row.average_price else 0.0
+            ))
 
             
         return TransactionDashboardPerDayDTO(
@@ -188,7 +256,9 @@ class TransactionRepository:
             totals=totals,
             labels=labels,
             month_labels=month_labels,
-            month_totals=month_totals
+            month_totals=month_totals,
+            top_products_by_quantity=top_products_by_quantity,
+            top_products_by_revenue=top_products_by_revenue
         )
         
 

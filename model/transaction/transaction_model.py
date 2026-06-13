@@ -59,12 +59,23 @@ class TransactionDTO(BaseModel):
 
 
     
+class TopProductDTO(BaseModel):
+    """DTO for top products in dashboard"""
+    item_id: int
+    name: str
+    code: str
+    quantity_sold: int
+    total_revenue: Decimal
+    average_price: Decimal
+
 class TransactionDashboardPerDayDTO(BaseModel):
     labels: List[str]
     month_labels: Optional[List[str]] = None
     month_totals: Optional[List[Decimal]] = None
     items_sold: Optional[List[int]] = None   # number of products sold per day
     totals: Optional[List[Decimal]] = None   # total revenue per day
+    top_products_by_quantity: Optional[List[TopProductDTO]] = None  # top 5 products by quantity
+    top_products_by_revenue: Optional[List[TopProductDTO]] = None  # top 5 products by revenue
 
 class TransactionResponseDTO(BaseModel):
     id: int
