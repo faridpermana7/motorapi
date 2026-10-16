@@ -1016,3 +1016,539 @@ WHERE phrases.deleted_at IS NULL
 2026-10-16 15:16:04,709 INFO sqlalchemy.engine.Engine [cached since 1877s ago] ()
 INFO:     127.0.0.1:63590 - "GET /phrases HTTP/1.1" 200 OK
 2026-10-16 15:16:04,721 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:54978 - "OPTIONS /phrases HTTP/1.1" 200 OK
+2026-10-16 16:06:05,701 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:05,707 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:05,708 INFO sqlalchemy.engine.Engine [cached since 4881s ago] ('pfar',)
+2026-10-16 16:06:05,757 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:06:05,757 INFO sqlalchemy.engine.Engine [cached since 4878s ago] ()
+INFO:     127.0.0.1:60015 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:06:05,779 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:53545 - "OPTIONS /enum_tables HTTP/1.1" 200 OK
+2026-10-16 16:06:05,799 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:05,800 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:05,800 INFO sqlalchemy.engine.Engine [cached since 4881s ago] ('pfar',)
+2026-10-16 16:06:05,824 INFO sqlalchemy.engine.Engine SELECT enum_tables.id, enum_tables.type, enum_tables.name, enum_tables.description, enum_tables.created_at, enum_tables.created_by, enum_tables.updated_at, enum_tables.updated_by, enum_tables.deleted_at 
+FROM enum_tables 
+WHERE enum_tables.deleted_at IS NULL
+2026-10-16 16:06:05,824 INFO sqlalchemy.engine.Engine [generated in 0.00051s] ()
+INFO:     127.0.0.1:60015 - "GET /enum_tables HTTP/1.1" 200 OK
+2026-10-16 16:06:05,839 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:53545 - "OPTIONS /customers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55378 - "OPTIONS /items HTTP/1.1" 200 OK
+2026-10-16 16:06:05,857 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:05,858 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:05,858 INFO sqlalchemy.engine.Engine [cached since 4881s ago] ('pfar',)
+2026-10-16 16:06:05,863 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:05,864 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:05,864 INFO sqlalchemy.engine.Engine [cached since 4881s ago] ('pfar',)
+2026-10-16 16:06:05,905 INFO sqlalchemy.engine.Engine SELECT customers.id, customers.name, customers.type_id, customers.phone, customers.email, customers.address, customers.created_at, customers.created_by, customers.updated_at, customers.updated_by, customers.deleted_at 
+FROM customers 
+WHERE customers.deleted_at IS NULL
+2026-10-16 16:06:05,905 INFO sqlalchemy.engine.Engine [generated in 0.00043s] ()
+2026-10-16 16:06:05,920 INFO sqlalchemy.engine.Engine SELECT items.id, items.code, items.barcode, items.name, items.brand, items.description, items.uom_id, items.minimum_stock, items.cost_price, items.selling_price, items.stock, items.category_id, items.created_at, items.created_by, items.updated_at, items.updated_by, items.deleted_at 
+FROM items 
+WHERE items.deleted_at IS NULL
+2026-10-16 16:06:05,920 INFO sqlalchemy.engine.Engine [generated in 0.00068s] ()
+2026-10-16 16:06:05,974 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER, $4::INTEGER, $5::INTEGER)
+2026-10-16 16:06:05,975 INFO sqlalchemy.engine.Engine [generated in 0.00127s] (1, 2, 5, 7, 8)
+2026-10-16 16:06:05,978 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:06:05,978 INFO sqlalchemy.engine.Engine [generated in 0.00032s] (12, 13, 14)
+2026-10-16 16:06:05,985 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:06:05,985 INFO sqlalchemy.engine.Engine [generated in 0.00023s] (2, 3, 4)
+INFO:     127.0.0.1:60015 - "GET /customers HTTP/1.1" 200 OK
+2026-10-16 16:06:05,990 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:50079 - "GET /items HTTP/1.1" 200 OK
+2026-10-16 16:06:06,001 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:06:08,628 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:08,628 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:08,628 INFO sqlalchemy.engine.Engine [cached since 4883s ago] ('pfar',)
+2026-10-16 16:06:08,635 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:06:08,635 INFO sqlalchemy.engine.Engine [cached since 4881s ago] ()
+INFO:     127.0.0.1:50079 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:06:08,643 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:55378 - "OPTIONS /transactions HTTP/1.1" 200 OK
+2026-10-16 16:06:08,708 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:08,709 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:08,709 INFO sqlalchemy.engine.Engine [cached since 4884s ago] ('pfar',)
+2026-10-16 16:06:08,712 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:08,712 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:08,712 INFO sqlalchemy.engine.Engine [cached since 4884s ago] ('pfar',)
+2026-10-16 16:06:08,725 INFO sqlalchemy.engine.Engine SELECT transactions.id, transactions.customer_id, transactions.payment_method, transactions.discount, transactions.tax_id, transactions.tax_value, transactions.total, transactions.created_at, transactions.created_by, transactions.updated_at, transactions.updated_by, transactions.deleted_at 
+FROM transactions 
+WHERE transactions.deleted_at IS NULL
+2026-10-16 16:06:08,726 INFO sqlalchemy.engine.Engine [generated in 0.00036s] ()
+2026-10-16 16:06:08,728 INFO sqlalchemy.engine.Engine SELECT enum_tables.id, enum_tables.type, enum_tables.name, enum_tables.description, enum_tables.created_at, enum_tables.created_by, enum_tables.updated_at, enum_tables.updated_by, enum_tables.deleted_at 
+FROM enum_tables 
+WHERE enum_tables.deleted_at IS NULL
+2026-10-16 16:06:08,728 INFO sqlalchemy.engine.Engine [cached since 2.904s ago] ()
+2026-10-16 16:06:08,734 INFO sqlalchemy.engine.Engine SELECT customers.id AS customers_id, customers.name AS customers_name, customers.type_id AS customers_type_id, customers.phone AS customers_phone, customers.email AS customers_email, customers.address AS customers_address, customers.created_at AS customers_created_at, customers.created_by AS customers_created_by, customers.updated_at AS customers_updated_at, customers.updated_by AS customers_updated_by, customers.deleted_at AS customers_deleted_at 
+FROM customers 
+WHERE customers.id IN ($1::INTEGER)
+2026-10-16 16:06:08,735 INFO sqlalchemy.engine.Engine [generated in 0.00041s] (5,)
+INFO:     127.0.0.1:50079 - "GET /enum_tables HTTP/1.1" 200 OK
+2026-10-16 16:06:08,738 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:06:08,743 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:06:08,744 INFO sqlalchemy.engine.Engine [generated in 0.00043s] (10, 11, 15)
+INFO:     127.0.0.1:60015 - "GET /transactions HTTP/1.1" 200 OK
+2026-10-16 16:06:08,766 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:06:08,799 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:08,800 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:08,800 INFO sqlalchemy.engine.Engine [cached since 4884s ago] ('pfar',)
+2026-10-16 16:06:08,801 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:06:08,801 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:06:08,802 INFO sqlalchemy.engine.Engine [cached since 4884s ago] ('pfar',)
+2026-10-16 16:06:08,808 INFO sqlalchemy.engine.Engine SELECT items.id, items.code, items.barcode, items.name, items.brand, items.description, items.uom_id, items.minimum_stock, items.cost_price, items.selling_price, items.stock, items.category_id, items.created_at, items.created_by, items.updated_at, items.updated_by, items.deleted_at 
+FROM items 
+WHERE items.deleted_at IS NULL
+2026-10-16 16:06:08,808 INFO sqlalchemy.engine.Engine [cached since 2.888s ago] ()
+2026-10-16 16:06:08,810 INFO sqlalchemy.engine.Engine SELECT customers.id, customers.name, customers.type_id, customers.phone, customers.email, customers.address, customers.created_at, customers.created_by, customers.updated_at, customers.updated_by, customers.deleted_at 
+FROM customers 
+WHERE customers.deleted_at IS NULL
+2026-10-16 16:06:08,810 INFO sqlalchemy.engine.Engine [cached since 2.906s ago] ()
+2026-10-16 16:06:08,815 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER, $4::INTEGER, $5::INTEGER)
+2026-10-16 16:06:08,816 INFO sqlalchemy.engine.Engine [cached since 2.842s ago] (1, 2, 5, 7, 8)
+2026-10-16 16:06:08,818 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:06:08,818 INFO sqlalchemy.engine.Engine [cached since 2.84s ago] (12, 13, 14)
+INFO:     127.0.0.1:60015 - "GET /customers HTTP/1.1" 200 OK
+2026-10-16 16:06:08,822 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:06:08,824 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:06:08,825 INFO sqlalchemy.engine.Engine [cached since 2.84s ago] (2, 3, 4)
+INFO:     127.0.0.1:50079 - "GET /items HTTP/1.1" 200 OK
+2026-10-16 16:06:08,829 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:08:17,448 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:08:17,449 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:08:17,449 INFO sqlalchemy.engine.Engine [cached since 5012s ago] ('pfar',)
+2026-10-16 16:08:17,455 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:08:17,455 INFO sqlalchemy.engine.Engine [cached since 5010s ago] ()
+INFO:     127.0.0.1:58038 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:08:17,464 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:08:17,538 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:08:17,539 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:08:17,539 INFO sqlalchemy.engine.Engine [cached since 5012s ago] ('pfar',)
+2026-10-16 16:08:17,541 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:08:17,541 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:08:17,542 INFO sqlalchemy.engine.Engine [cached since 5012s ago] ('pfar',)
+2026-10-16 16:08:17,550 INFO sqlalchemy.engine.Engine SELECT items.id, items.code, items.barcode, items.name, items.brand, items.description, items.uom_id, items.minimum_stock, items.cost_price, items.selling_price, items.stock, items.category_id, items.created_at, items.created_by, items.updated_at, items.updated_by, items.deleted_at 
+FROM items 
+WHERE items.deleted_at IS NULL
+2026-10-16 16:08:17,550 INFO sqlalchemy.engine.Engine [cached since 131.6s ago] ()
+2026-10-16 16:08:17,552 INFO sqlalchemy.engine.Engine SELECT enum_tables.id, enum_tables.type, enum_tables.name, enum_tables.description, enum_tables.created_at, enum_tables.created_by, enum_tables.updated_at, enum_tables.updated_by, enum_tables.deleted_at 
+FROM enum_tables 
+WHERE enum_tables.deleted_at IS NULL
+2026-10-16 16:08:17,553 INFO sqlalchemy.engine.Engine [cached since 131.7s ago] ()
+2026-10-16 16:08:17,556 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER, $4::INTEGER, $5::INTEGER)
+2026-10-16 16:08:17,556 INFO sqlalchemy.engine.Engine [cached since 131.6s ago] (1, 2, 5, 7, 8)
+INFO:     127.0.0.1:60659 - "GET /enum_tables HTTP/1.1" 200 OK
+2026-10-16 16:08:17,559 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:08:17,562 INFO sqlalchemy.engine.Engine SELECT enum_tables.id AS enum_tables_id, enum_tables.type AS enum_tables_type, enum_tables.name AS enum_tables_name, enum_tables.description AS enum_tables_description, enum_tables.created_at AS enum_tables_created_at, enum_tables.created_by AS enum_tables_created_by, enum_tables.updated_at AS enum_tables_updated_at, enum_tables.updated_by AS enum_tables_updated_by, enum_tables.deleted_at AS enum_tables_deleted_at 
+FROM enum_tables 
+WHERE enum_tables.id IN ($1::INTEGER, $2::INTEGER, $3::INTEGER)
+2026-10-16 16:08:17,562 INFO sqlalchemy.engine.Engine [cached since 131.6s ago] (2, 3, 4)
+INFO:     127.0.0.1:58038 - "GET /items HTTP/1.1" 200 OK
+2026-10-16 16:08:17,566 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:58407 - "OPTIONS /transactions/dashboard/perday HTTP/1.1" 200 OK
+2026-10-16 16:10:01,411 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:01,412 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:01,412 INFO sqlalchemy.engine.Engine [cached since 5116s ago] ('pfar',)
+2026-10-16 16:10:01,420 INFO sqlalchemy.engine.Engine SELECT configurations.value 
+FROM configurations 
+WHERE configurations.attribute = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-10-16 16:10:01,422 INFO sqlalchemy.engine.Engine [cached since 5114s ago] ('total_per_month', 1)
+2026-10-16 16:10:01,434 INFO sqlalchemy.engine.Engine SELECT date(transactions.created_at) AS day, sum(transaction_items.quantity) AS items_sold, sum(transactions.total) AS sales_total 
+FROM transactions JOIN transaction_items ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::DATE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY date(transactions.created_at) ORDER BY date(transactions.created_at)
+2026-10-16 16:10:01,435 INFO sqlalchemy.engine.Engine [cached since 5114s ago] (datetime.date(2026, 10, 10), datetime.datetime(2026, 10, 16, 23, 59, 59, 999999))
+2026-10-16 16:10:01,500 INFO sqlalchemy.engine.Engine SELECT EXTRACT(year FROM transactions.created_at) AS year, EXTRACT(month FROM transactions.created_at) AS month, sum(transactions.total) AS sales_total 
+FROM transactions 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::TIMESTAMP WITHOUT TIME ZONE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at) ORDER BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at)
+2026-10-16 16:10:01,500 INFO sqlalchemy.engine.Engine [cached since 5114s ago] (datetime.datetime(2025, 11, 1, 0, 0), datetime.datetime(2026, 10, 31, 23, 59, 59, 999999))
+2026-10-16 16:10:01,512 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transaction_items.quantity) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:10:01,512 INFO sqlalchemy.engine.Engine [cached since 5114s ago] (5,)
+2026-10-16 16:10:01,535 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transactions.total) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:10:01,535 INFO sqlalchemy.engine.Engine [cached since 5114s ago] (5,)
+INFO:     127.0.0.1:61069 - "GET /transactions/dashboard/perday HTTP/1.1" 200 OK
+2026-10-16 16:10:01,547 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:10:02,055 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:02,055 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:02,055 INFO sqlalchemy.engine.Engine [cached since 5117s ago] ('pfar',)
+2026-10-16 16:10:02,060 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:10:02,061 INFO sqlalchemy.engine.Engine [cached since 5114s ago] ()
+INFO:     127.0.0.1:61069 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:10:02,068 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:10:06,743 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:06,743 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:06,743 INFO sqlalchemy.engine.Engine [cached since 5122s ago] ('pfar',)
+2026-10-16 16:10:06,748 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:10:06,748 INFO sqlalchemy.engine.Engine [cached since 5119s ago] ()
+INFO:     127.0.0.1:61069 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:10:06,755 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:56927 - "OPTIONS /configurations HTTP/1.1" 200 OK
+2026-10-16 16:10:06,780 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:06,780 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:06,780 INFO sqlalchemy.engine.Engine [cached since 5122s ago] ('pfar',)
+2026-10-16 16:10:06,788 INFO sqlalchemy.engine.Engine SELECT configurations.id, configurations.module, configurations.type, configurations.attribute, configurations.value, configurations.created_at, configurations.created_by, configurations.updated_at, configurations.updated_by, configurations.deleted_at 
+FROM configurations 
+WHERE configurations.deleted_at IS NULL
+2026-10-16 16:10:06,788 INFO sqlalchemy.engine.Engine [cached since 3255s ago] ()
+INFO:     127.0.0.1:61069 - "GET /configurations HTTP/1.1" 200 OK
+2026-10-16 16:10:06,794 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:10:10,928 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:10,929 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:10,929 INFO sqlalchemy.engine.Engine [cached since 5126s ago] ('pfar',)
+2026-10-16 16:10:10,935 INFO sqlalchemy.engine.Engine SELECT configurations.value 
+FROM configurations 
+WHERE configurations.attribute = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-10-16 16:10:10,935 INFO sqlalchemy.engine.Engine [cached since 5123s ago] ('total_per_month', 1)
+2026-10-16 16:10:10,939 INFO sqlalchemy.engine.Engine SELECT date(transactions.created_at) AS day, sum(transaction_items.quantity) AS items_sold, sum(transactions.total) AS sales_total 
+FROM transactions JOIN transaction_items ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::DATE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY date(transactions.created_at) ORDER BY date(transactions.created_at)
+2026-10-16 16:10:10,940 INFO sqlalchemy.engine.Engine [cached since 5123s ago] (datetime.date(2026, 10, 10), datetime.datetime(2026, 10, 16, 23, 59, 59, 999999))
+2026-10-16 16:10:10,946 INFO sqlalchemy.engine.Engine SELECT EXTRACT(year FROM transactions.created_at) AS year, EXTRACT(month FROM transactions.created_at) AS month, sum(transactions.total) AS sales_total 
+FROM transactions 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::TIMESTAMP WITHOUT TIME ZONE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at) ORDER BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at)
+2026-10-16 16:10:10,947 INFO sqlalchemy.engine.Engine [cached since 5123s ago] (datetime.datetime(2025, 11, 1, 0, 0), datetime.datetime(2026, 10, 31, 23, 59, 59, 999999))
+2026-10-16 16:10:10,951 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transaction_items.quantity) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:10:10,952 INFO sqlalchemy.engine.Engine [cached since 5123s ago] (5,)
+2026-10-16 16:10:10,957 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transactions.total) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:10:10,958 INFO sqlalchemy.engine.Engine [cached since 5123s ago] (5,)
+INFO:     127.0.0.1:61069 - "GET /transactions/dashboard/perday HTTP/1.1" 200 OK
+2026-10-16 16:10:10,964 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:10:11,288 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:10:11,289 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:10:11,289 INFO sqlalchemy.engine.Engine [cached since 5126s ago] ('pfar',)
+2026-10-16 16:10:11,294 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:10:11,294 INFO sqlalchemy.engine.Engine [cached since 5123s ago] ()
+INFO:     127.0.0.1:61069 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:10:11,303 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:11:46,148 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:11:46,149 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:11:46,149 INFO sqlalchemy.engine.Engine [cached since 5221s ago] ('pfar',)
+2026-10-16 16:11:46,155 INFO sqlalchemy.engine.Engine SELECT configurations.value 
+FROM configurations 
+WHERE configurations.attribute = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-10-16 16:11:46,155 INFO sqlalchemy.engine.Engine [cached since 5218s ago] ('total_per_month', 1)
+2026-10-16 16:11:46,162 INFO sqlalchemy.engine.Engine SELECT date(transactions.created_at) AS day, sum(transaction_items.quantity) AS items_sold, sum(transactions.total) AS sales_total 
+FROM transactions JOIN transaction_items ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::DATE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY date(transactions.created_at) ORDER BY date(transactions.created_at)
+2026-10-16 16:11:46,162 INFO sqlalchemy.engine.Engine [cached since 5218s ago] (datetime.date(2026, 10, 10), datetime.datetime(2026, 10, 16, 23, 59, 59, 999999))
+2026-10-16 16:11:46,168 INFO sqlalchemy.engine.Engine SELECT EXTRACT(year FROM transactions.created_at) AS year, EXTRACT(month FROM transactions.created_at) AS month, sum(transactions.total) AS sales_total 
+FROM transactions 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::TIMESTAMP WITHOUT TIME ZONE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at) ORDER BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at)
+2026-10-16 16:11:46,168 INFO sqlalchemy.engine.Engine [cached since 5218s ago] (datetime.datetime(2025, 11, 1, 0, 0), datetime.datetime(2026, 10, 31, 23, 59, 59, 999999))
+2026-10-16 16:11:46,174 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transaction_items.quantity) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:11:46,175 INFO sqlalchemy.engine.Engine [cached since 5218s ago] (5,)
+2026-10-16 16:11:46,182 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transactions.total) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:11:46,182 INFO sqlalchemy.engine.Engine [cached since 5218s ago] (5,)
+INFO:     127.0.0.1:61419 - "GET /transactions/dashboard/perday HTTP/1.1" 200 OK
+2026-10-16 16:11:46,187 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:11:46,630 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:11:46,630 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:11:46,630 INFO sqlalchemy.engine.Engine [cached since 5221s ago] ('pfar',)
+2026-10-16 16:11:46,638 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:11:46,638 INFO sqlalchemy.engine.Engine [cached since 5219s ago] ()
+INFO:     127.0.0.1:61419 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:11:46,645 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:13:43,147 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:13:43,148 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:13:43,149 INFO sqlalchemy.engine.Engine [cached since 5338s ago] ('pfar',)
+2026-10-16 16:13:43,159 INFO sqlalchemy.engine.Engine SELECT configurations.value 
+FROM configurations 
+WHERE configurations.attribute = $1::VARCHAR 
+ LIMIT $2::INTEGER
+2026-10-16 16:13:43,160 INFO sqlalchemy.engine.Engine [cached since 5335s ago] ('total_per_month', 1)
+2026-10-16 16:13:43,169 INFO sqlalchemy.engine.Engine SELECT date(transactions.created_at) AS day, sum(transaction_items.quantity) AS items_sold, sum(transactions.total) AS sales_total 
+FROM transactions JOIN transaction_items ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::DATE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY date(transactions.created_at) ORDER BY date(transactions.created_at)
+2026-10-16 16:13:43,170 INFO sqlalchemy.engine.Engine [cached since 5335s ago] (datetime.date(2026, 10, 10), datetime.datetime(2026, 10, 16, 23, 59, 59, 999999))
+2026-10-16 16:13:43,174 INFO sqlalchemy.engine.Engine SELECT EXTRACT(year FROM transactions.created_at) AS year, EXTRACT(month FROM transactions.created_at) AS month, sum(transactions.total) AS sales_total 
+FROM transactions 
+WHERE transactions.deleted_at IS NULL AND transactions.created_at >= $1::TIMESTAMP WITHOUT TIME ZONE AND transactions.created_at <= $2::TIMESTAMP WITHOUT TIME ZONE GROUP BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at) ORDER BY EXTRACT(year FROM transactions.created_at), EXTRACT(month FROM transactions.created_at)
+2026-10-16 16:13:43,175 INFO sqlalchemy.engine.Engine [cached since 5335s ago] (datetime.datetime(2025, 11, 1, 0, 0), datetime.datetime(2026, 10, 31, 23, 59, 59, 999999))
+2026-10-16 16:13:43,181 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transaction_items.quantity) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:13:43,181 INFO sqlalchemy.engine.Engine [cached since 5335s ago] (5,)
+2026-10-16 16:13:43,188 INFO sqlalchemy.engine.Engine SELECT items.id AS item_id, items.name AS name, items.code AS code, sum(transaction_items.quantity) AS quantity_sold, sum(transactions.total) AS total_revenue, avg(transaction_items.price) AS average_price 
+FROM items JOIN transaction_items ON items.id = transaction_items.item_id JOIN transactions ON transactions.id = transaction_items.transaction_id 
+WHERE transactions.deleted_at IS NULL GROUP BY items.id, items.name, items.code ORDER BY sum(transactions.total) DESC 
+ LIMIT $1::INTEGER
+2026-10-16 16:13:43,189 INFO sqlalchemy.engine.Engine [cached since 5335s ago] (5,)
+INFO:     127.0.0.1:60693 - "GET /transactions/dashboard/perday HTTP/1.1" 200 OK
+2026-10-16 16:13:43,264 INFO sqlalchemy.engine.Engine ROLLBACK
+2026-10-16 16:13:43,716 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-10-16 16:13:43,717 INFO sqlalchemy.engine.Engine SELECT users.id, users.role_id, users.username, users.email, users.password_hash, users.created_at, users.created_by, users.updated_at, users.updated_by, users.deleted_at 
+FROM users 
+WHERE users.username = $1::VARCHAR
+2026-10-16 16:13:43,717 INFO sqlalchemy.engine.Engine [cached since 5339s ago] ('pfar',)
+2026-10-16 16:13:43,722 INFO sqlalchemy.engine.Engine SELECT phrases.id, phrases.phrase, phrases.translation, phrases.language, phrases.created_at, phrases.created_by, phrases.updated_at, phrases.updated_by, phrases.deleted_at 
+FROM phrases 
+WHERE phrases.deleted_at IS NULL
+2026-10-16 16:13:43,723 INFO sqlalchemy.engine.Engine [cached since 5336s ago] ()
+INFO:     127.0.0.1:60693 - "GET /phrases HTTP/1.1" 200 OK
+2026-10-16 16:13:43,731 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     127.0.0.1:59054 - "GET /docs HTTP/1.1" 200 OK
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+D:\project\motorapi\.venv\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+INFO:     127.0.0.1:59054 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62465 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62465 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55024 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55024 - "GET /openapi.json HTTP/1.1" 200 OK

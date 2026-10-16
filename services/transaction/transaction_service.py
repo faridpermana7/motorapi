@@ -98,10 +98,16 @@ class TransactionRepository:
         return [TransactionResponseDTO.from_orm(e) for e in entities]
     
     async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
-        #get configurable number of months back (e.g. 6 months) for monthly data in dashboard
-        query = select(ConfigurationEntity.value).where(ConfigurationEntity.attribute == "total_per_month").limit(1)
+        query = select(
+            ConfigurationEntity.attribute,
+            ConfigurationEntity.value
+        ).where(
+            ConfigurationEntity.attribute.in_(["total_per_month", "top_rank"])
+        )
         result = await self.session.execute(query)
-        months_back = int(result.scalar() or 6)  # default to 6 if not set
+        configuration_values = dict(result.all())
+        months_back = int(configuration_values.get("total_per_month") or 6)
+        top_rank = int(configuration_values.get("top_rank") or 5)
 
         # 1. Find start (Monday) and end (Sunday) of current week
         today = datetime.utcnow().date()
@@ -133,6 +139,7 @@ class TransactionRepository:
         labels = []
         month_labels = []
         month_totals = []
+        month_profits = []
         items_sold = []
         totals = []
 
@@ -169,6 +176,29 @@ class TransactionRepository:
         )
         monthly_result = await self.session.execute(monthly_query)
         monthly_rows = monthly_result.all()
+
+        monthly_profit_query = (
+            select(
+                extract("year", TransactionEntity.created_at).label("year"),
+                extract("month", TransactionEntity.created_at).label("month"),
+                func.sum(
+                    TransactionItemEntity.quantity
+                    * (
+                        func.coalesce(ItemEntity.selling_price, 0)
+                        - func.coalesce(ItemEntity.cost_price, 0)
+                    )
+                ).label("net_profit")
+            )
+            .join(TransactionItemEntity, TransactionEntity.id == TransactionItemEntity.transaction_id)
+            .join(ItemEntity, ItemEntity.id == TransactionItemEntity.item_id)
+            .where(TransactionEntity.deleted_at == None)
+            .where(TransactionEntity.created_at >= start_month)
+            .where(TransactionEntity.created_at <= end_month)
+            .group_by(extract("year", TransactionEntity.created_at), extract("month", TransactionEntity.created_at))
+            .order_by(extract("year", TransactionEntity.created_at), extract("month", TransactionEntity.created_at))
+        )
+        monthly_profit_result = await self.session.execute(monthly_profit_query)
+        monthly_profit_rows = monthly_profit_result.all()
         
         cur = start_month
         end = datetime(today.year, today.month, 1) 
@@ -178,7 +208,12 @@ class TransactionRepository:
                 (r for r in monthly_rows if int(r.month) == cur.month and int(r.year) == cur.year),
                 None
             )
+            profit_match = next(
+                (r for r in monthly_profit_rows if int(r.month) == cur.month and int(r.year) == cur.year),
+                None
+            )
             month_totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
+            month_profits.append(float(profit_match.net_profit) if profit_match and profit_match.net_profit else 0.0)
 
             # move to next month
             if cur.month == 12:
@@ -186,7 +221,7 @@ class TransactionRepository:
             else:
                 cur = datetime(cur.year, cur.month + 1, 1)
 
-        # 4. Get top 5 products by quantity sold
+        # 4. Get top products by quantity sold
         top_qty_query = (
             select(
                 ItemEntity.id.label("item_id"),
@@ -194,6 +229,13 @@ class TransactionRepository:
                 ItemEntity.code.label("code"),
                 func.sum(TransactionItemEntity.quantity).label("quantity_sold"),
                 func.sum(TransactionEntity.total).label("total_revenue"),
+                func.sum(
+                    TransactionItemEntity.quantity
+                    * (
+                        func.coalesce(ItemEntity.selling_price, 0)
+                        - func.coalesce(ItemEntity.cost_price, 0)
+                    )
+                ).label("net_profit"),
                 func.avg(TransactionItemEntity.price).label("average_price")
             )
             .join(TransactionItemEntity, ItemEntity.id == TransactionItemEntity.item_id)
@@ -201,7 +243,7 @@ class TransactionRepository:
             .where(TransactionEntity.deleted_at == None)
             .group_by(ItemEntity.id, ItemEntity.name, ItemEntity.code)
             .order_by(func.sum(TransactionItemEntity.quantity).desc())
-            .limit(5)
+            .limit(top_rank)
         )
         top_qty_result = await self.session.execute(top_qty_query)
         top_qty_rows = top_qty_result.all()
@@ -215,10 +257,11 @@ class TransactionRepository:
                 code=row.code,
                 quantity_sold=int(row.quantity_sold) if row.quantity_sold else 0,
                 total_revenue=float(row.total_revenue) if row.total_revenue else 0.0,
+                net_profit=float(row.net_profit) if row.net_profit else 0.0,
                 average_price=float(row.average_price) if row.average_price else 0.0
             ))
 
-        # 5. Get top 5 products by revenue
+        # 5. Get top products by revenue
         top_revenue_query = (
             select(
                 ItemEntity.id.label("item_id"),
@@ -226,6 +269,13 @@ class TransactionRepository:
                 ItemEntity.code.label("code"),
                 func.sum(TransactionItemEntity.quantity).label("quantity_sold"),
                 func.sum(TransactionEntity.total).label("total_revenue"),
+                func.sum(
+                    TransactionItemEntity.quantity
+                    * (
+                        func.coalesce(ItemEntity.selling_price, 0)
+                        - func.coalesce(ItemEntity.cost_price, 0)
+                    )
+                ).label("net_profit"),
                 func.avg(TransactionItemEntity.price).label("average_price")
             )
             .join(TransactionItemEntity, ItemEntity.id == TransactionItemEntity.item_id)
@@ -233,7 +283,7 @@ class TransactionRepository:
             .where(TransactionEntity.deleted_at == None)
             .group_by(ItemEntity.id, ItemEntity.name, ItemEntity.code)
             .order_by(func.sum(TransactionEntity.total).desc())
-            .limit(5)
+            .limit(top_rank)
         )
         top_revenue_result = await self.session.execute(top_revenue_query)
         top_revenue_rows = top_revenue_result.all()
@@ -247,6 +297,7 @@ class TransactionRepository:
                 code=row.code,
                 quantity_sold=int(row.quantity_sold) if row.quantity_sold else 0,
                 total_revenue=float(row.total_revenue) if row.total_revenue else 0.0,
+                net_profit=float(row.net_profit) if row.net_profit else 0.0,
                 average_price=float(row.average_price) if row.average_price else 0.0
             ))
 
@@ -257,6 +308,7 @@ class TransactionRepository:
             labels=labels,
             month_labels=month_labels,
             month_totals=month_totals,
+            month_profits=month_profits,
             top_products_by_quantity=top_products_by_quantity,
             top_products_by_revenue=top_products_by_revenue
         )

@@ -66,12 +66,14 @@ class TopProductDTO(BaseModel):
     code: str
     quantity_sold: int
     total_revenue: Decimal
+    net_profit: Decimal
     average_price: Decimal
 
 class TransactionDashboardPerDayDTO(BaseModel):
     labels: List[str]
     month_labels: Optional[List[str]] = None
     month_totals: Optional[List[Decimal]] = None
+    month_profits: Optional[List[Decimal]] = None
     items_sold: Optional[List[int]] = None   # number of products sold per day
     totals: Optional[List[Decimal]] = None   # total revenue per day
     top_products_by_quantity: Optional[List[TopProductDTO]] = None  # top 5 products by quantity
