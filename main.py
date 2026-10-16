@@ -7,7 +7,7 @@ from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
 from routers import auth 
 from dotenv import load_dotenv 
-from routers.admin import configurations, logins, menus, phrases, users
+from routers.admin import configurations, logins, menus, phrases, roles, users
 from routers.master import customers, enum_tables, items, locations, weather
 from routers.transaction import cashier_logs, transaction_items, transactions
 
@@ -20,9 +20,16 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1:8080",
-        "http://127.0.0.1:10000",
-        "http://motor.web:10000",
+        "http://127.0.0.1:8080", 
+        "https://127.0.0.1:8080",
+
+        "http://localhost:8081",
+        "https://localhost:8081",
+
+        "https://motor.web:8080",
+        "https://motor.web:8081",
+        "https://motor.web:10000",
+        "https://motor.web:10001",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -53,6 +60,7 @@ app.include_router(phrases.router)
 app.include_router(users.router)
 app.include_router(menus.router)
 app.include_router(configurations.router)
+app.include_router(roles.router)
 
 # Master
 app.include_router(weather.router)

@@ -12,6 +12,7 @@ class MenuEntity(Base):
     __tablename__ = "menus"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     parent_id = Column(Integer, ForeignKey("menus.id"), nullable=True)
+    role_id = Column(Integer, ForeignKey("roles.id"), nullable=True)
     label = Column(String(100), nullable=False)
     path = Column(String(200), nullable=True)   # allow NULL for parent menus
     icon = Column(String(50)) 
@@ -24,17 +25,17 @@ class MenuEntity(Base):
     deleted_at = Column(DateTime) 
 
     # Self-referential relationship
+    role = relationship("RoleEntity", back_populates="menu")
     parent = relationship("MenuEntity", remote_side=[id], back_populates="children")
-
-    children = relationship(
-        "MenuEntity",
-        back_populates="parent",
-        cascade="all, delete-orphan"
-    )
+    children = relationship("MenuEntity", back_populates="parent", cascade="all, delete-orphan")
 
     @property
     def parent_name(self) -> str:
         return self.parent.label if self.parent else None
+
+    @property
+    def role_name(self) -> str:
+        return self.role.name if self.role else None
 
 # Menu DTO (API Model)
 class MenuDTO(BaseModel):
@@ -42,6 +43,7 @@ class MenuDTO(BaseModel):
     label: str
     path: Optional[str]  
     icon: Optional[str]
+    role_id: int
     is_active: bool = False
     sort_order: int = 0
 
@@ -54,6 +56,8 @@ class MenuResponseDTO(BaseModel):
     icon: Optional[str]
     is_active: bool
     sort_order: int
+    role_id: Optional[int] = None
+    role_name: Optional[str] = None
     created_at: Optional[datetime]
     created_by: Optional[str]
     updated_at: Optional[datetime]

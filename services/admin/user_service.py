@@ -4,6 +4,8 @@ from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
+
+from sqlalchemy.orm import selectinload
 from model.admin.user_model import UserEntity, UserDTO, UserResponseDTO
 from passlib.context import CryptContext
 
@@ -43,19 +45,27 @@ class UserRepository:
         return UserResponseDTO.from_orm(entity)
 
     async def get_all_users(self) -> List[UserResponseDTO]:
-        query = select(UserEntity).where(UserEntity.deleted_at == null())
+        query = (
+            select(UserEntity)
+            .where(UserEntity.deleted_at == null())
+            .options(selectinload(UserEntity.role))
+        )
         result = await self.session.execute(query)
         entities = result.scalars().all()
         return [UserResponseDTO.from_orm(e) for e in entities]
 
     async def get_user_by_id(self, user_id: int) -> Optional[UserResponseDTO]:
-        query = select(UserEntity).where(UserEntity.deleted_at == null() & UserEntity.id == user_id) 
+        query = (
+            select(UserEntity)
+            .where(UserEntity.deleted_at == null(), UserEntity.id == user_id)
+            .options(selectinload(UserEntity.role))
+        )
         result = await self.session.execute(query) 
         entity = result.scalars().first()
         return UserResponseDTO.from_orm(entity) if entity else None
 
     async def update_user(self, user_id: int, data: UserDTO, updated_by: str) -> Optional[UserResponseDTO]:
-        query = select(UserEntity).where(UserEntity.deleted_at == null()).where(UserEntity.id == user_id)
+        query = select(UserEntity).options(selectinload(UserEntity.role)).where(UserEntity.deleted_at == null()).where(UserEntity.id == user_id)
         result = await self.session.execute(query)
         entity = result.scalars().first()
         if not entity:

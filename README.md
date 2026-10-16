@@ -75,3 +75,7 @@ python test_auth.py
 - Token expiration enforces re-login after 30 minutes
 
 Open interactive docs at http://127.0.0.1:9999/docs
+
+
+## Testing Authentication
+running as server by task schedule manager with run_server.bat

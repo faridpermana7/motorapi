@@ -136,7 +136,7 @@ class AuthService:
         await login_repo.create_login(login_data, user=user.username)
         
         menu_repo = MenuRepository(self.session)
-        menus = await menu_repo.get_menu_tree()
+        menus = await menu_repo.get_menu_tree(user.id)  # Assuming you want to fetch menus for the logged-in user
 
         return Token(access_token=access_token, token_type="bearer", menus=menus)
 

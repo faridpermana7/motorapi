@@ -1,0 +1,51 @@
+Configuration VM
+
+**NETWORK**
+Adapter 1 : Bridge Adapter
+
+motor@faribuntu:~$ sudo cat /etc/netplan/50-cloud-init.yaml
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses:
+        - 172.16.0.110/16 #static ip wifi (192.168.1.110/24)
+      gateway4: 172.16.0.1  #static gateway (192.168.1.1)
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+
+
+when using a LAN
+ASIX USB to Gigabit Ethernet Family
+VM				: 172.16.0.110
+Host			: 172.16.0.106
+Default Gateway : 172.16.0.1
+
+
+when using a WIFI
+RZ616 Wi-Fi 6E 160MZ
+VM				: 192.168.1.110
+Host			: 192.168.1.2
+Default Gateway : 192.168.0.1
+
+
+sudo nano /etc/netplan/50-cloud-init.yaml
+sudo netplan apply
+
+
+
+**POSTGRES**
+sudo nano /etc/postgresql/<version>/main/postgresql.conf
+listen_addresses = '*'
+
+
+motor@faribuntu:~$ sudo nano /etc/postgresql/16/main/pg_hba.conf
+
+# local         DATABASE  USER  METHOD  [OPTIONS]
+host    all  			all  			172.0.0.0/16 			md5
+host    all             all             192.168.1.0/24          md5
+
+
+sudo systemctl restart postgresql

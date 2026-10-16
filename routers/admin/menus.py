@@ -34,7 +34,7 @@ async def list_parent_menus(service: MenuService = Depends(get_menu_service),
 async def list_menu_trees(service: MenuService = Depends(get_menu_service),
                           current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                           ):
-    return await service.get_menu_tree()
+    return await service.get_menu_tree(current_user.id)
 
 @router.get("/menus", response_model=List[MenuResponseDTO])
 async def list_menus(service: MenuService = Depends(get_menu_service),
@@ -74,7 +74,7 @@ async def delete_soft_menu(menu_id: int, service: MenuService = Depends(get_menu
 async def delete_menu(menu_id: int, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
-    success = await service.delete_menu(menu_id, current_user.username)
+    success = await service.delete_menu(menu_id)
     if not success:
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return {"message": "Enum Table deleted"}
