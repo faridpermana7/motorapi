@@ -1,17 +1,28 @@
 from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation
 
 
 from fastapi import HTTPException
-from sqlalchemy import extract, func, null 
+from sqlalchemy import case, extract, func, null, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
 
 from sqlalchemy.orm import selectinload
+from model.master.customer_model import CustomerEntity
+from model.master.enum_table_model import EnumTableEntity
 from model.master.item_model import ItemEntity
 from model.admin.configuration_model import ConfigurationEntity
 from model.transaction.transaction_item_model import TransactionItemEntity
-from model.transaction.transaction_model import TransactionDashboardPerDayDTO, TransactionEntity, TransactionDTO, TransactionResponseDTO, TopProductDTO 
+from model.transaction.transaction_model import (
+    TopCreditCustomerDTO,
+    TopPointCustomerDTO,
+    TopProductDTO,
+    TransactionDashboardPerDayDTO,
+    TransactionDTO,
+    TransactionEntity,
+    TransactionResponseDTO,
+)
 
 class TransactionRepository:
     def __init__(self, session: AsyncSession):
@@ -26,6 +37,27 @@ class TransactionRepository:
             month += 12
             year -= 1
         return datetime(year, month, 1)
+
+    @staticmethod
+    def parse_point_tiers(value: str) -> List[tuple[Decimal, int]]:
+        try:
+            tiers = []
+            for tier in value.split(";"):
+                point_text, threshold_text = tier.split(">", maxsplit=1)
+                points = int(point_text.strip())
+                threshold = Decimal(threshold_text.strip())
+                if points < 0 or not threshold.is_finite() or threshold <= 0:
+                    raise ValueError
+                tiers.append((threshold, points))
+
+            if not tiers or len({threshold for threshold, _ in tiers}) != len(tiers):
+                raise ValueError
+            return sorted(tiers)
+        except (InvalidOperation, ValueError) as exc:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid Application.points configuration",
+            ) from exc
 
     async def create_transaction(self, data: TransactionDTO, user: str = None
                                  ) -> Optional[TransactionResponseDTO]:     
@@ -88,15 +120,20 @@ class TransactionRepository:
         except Exception as e:
             await self.session.rollback()
             raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
-
-    async def get_all_transactions(self) -> List[TransactionResponseDTO]:
-        query = select(TransactionEntity).options(selectinload(TransactionEntity.customer), 
-                                                  selectinload(TransactionEntity.tax)
-                                                  ).where(TransactionEntity.deleted_at == null())
-        result = await self.session.execute(query)
-        entities = result.scalars().all()
-        return [TransactionResponseDTO.from_orm(e) for e in entities]
     
+    async def get_all_transactions(self) -> List[TransactionResponseDTO]:
+            query = (
+                select(TransactionEntity)
+                .options(
+                    selectinload(TransactionEntity.customer).selectinload(CustomerEntity.type), 
+                    selectinload(TransactionEntity.tax)
+                )
+                .where(TransactionEntity.deleted_at == null())
+            )
+            result = await self.session.execute(query)
+            entities = result.scalars().all()
+            return [TransactionResponseDTO.from_orm(e) for e in entities]
+
     async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
         query = select(
             ConfigurationEntity.attribute,
@@ -108,6 +145,32 @@ class TransactionRepository:
         configuration_values = dict(result.all())
         months_back = int(configuration_values.get("total_per_month") or 6)
         top_rank = int(configuration_values.get("top_rank") or 5)
+
+        points_result = await self.session.execute(
+            select(ConfigurationEntity.value).where(
+                ConfigurationEntity.module == "Application",
+                ConfigurationEntity.attribute == "points",
+                ConfigurationEntity.deleted_at == None,
+            )
+        )
+        points_configurations = points_result.scalars().all()
+        if not points_configurations:
+            raise HTTPException(
+                status_code=500,
+                detail="Missing Application.points configuration",
+            )
+        if len(points_configurations) != 1:
+            raise HTTPException(
+                status_code=500,
+                detail="Multiple Application.points configurations found",
+            )
+        points_configuration = points_configurations[0]
+        if not isinstance(points_configuration, str) or not points_configuration.strip():
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid Application.points configuration",
+            )
+        point_tiers = self.parse_point_tiers(points_configuration)
 
         # 1. Find start (Monday) and end (Sunday) of current week
         today = datetime.utcnow().date()
@@ -139,6 +202,8 @@ class TransactionRepository:
         labels = []
         month_labels = []
         month_totals = []
+        month_tax = []
+        month_credit = []
         month_profits = []
         items_sold = []
         totals = []
@@ -151,23 +216,84 @@ class TransactionRepository:
             totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
  
         start_month = self.subtract_months(datetime(today.year, today.month, 1), months_back-1) # e.g. if today is June and months_back=6, start_month will be January 1st
-        first_day_this_month = datetime(today.year, today.month, 1) 
-
         # First day of next month
         if today.month == 12:
-            first_day_this_month = datetime(today.year + 1, 1, 1)
+            first_day_next_month = datetime(today.year + 1, 1, 1)
         else:
             first_day_next_month = datetime(today.year, today.month + 1, 1)
 
         # Last day of current month
         end_month = datetime.combine(first_day_next_month - timedelta(days=1), datetime.max.time()) 
 
+        # Rank credit customers by their transaction totals during the configured period.
+        top_credit_query = (
+            select(
+                CustomerEntity.name.label("customer_name"),
+                func.sum(TransactionEntity.total).label("value"),
+            )
+            .join(CustomerEntity, TransactionEntity.customer_id == CustomerEntity.id)
+            .join(EnumTableEntity, CustomerEntity.type_id == EnumTableEntity.id)
+            .where(TransactionEntity.deleted_at == None)
+            .where(TransactionEntity.created_at >= start_month)
+            .where(TransactionEntity.created_at <= end_month)
+            .where(EnumTableEntity.name == "Credit")
+            .group_by(CustomerEntity.id, CustomerEntity.name)
+            .order_by(func.sum(TransactionEntity.total).desc())
+            .limit(top_rank)
+        )
+        top_credit_result = await self.session.execute(top_credit_query)
+        top_credit_customers = [
+            TopCreditCustomerDTO(
+                customer_name=row.customer_name,
+                value=row.value if row.value is not None else Decimal("0.00"),
+            )
+            for row in top_credit_result.all()
+        ]
+
+        # Each non-credit transaction earns the highest tier it meets; rank by summed points.
+        point_value = case(
+            *[
+                (TransactionEntity.total > threshold, points)
+                for threshold, points in reversed(point_tiers)
+            ],
+            else_=0,
+        )
+        top_points_query = (
+            select(
+                CustomerEntity.name.label("customer_name"),
+                func.sum(point_value).label("value"),
+            )
+            .join(CustomerEntity, TransactionEntity.customer_id == CustomerEntity.id)
+            .outerjoin(EnumTableEntity, CustomerEntity.type_id == EnumTableEntity.id)
+            .where(TransactionEntity.deleted_at == None)
+            .where(TransactionEntity.created_at >= start_month)
+            .where(TransactionEntity.created_at <= end_month)
+            .where(or_(EnumTableEntity.name != "Credit", EnumTableEntity.name.is_(None)))
+            .group_by(CustomerEntity.id, CustomerEntity.name)
+            .order_by(func.sum(point_value).desc())
+            .limit(top_rank)
+        )
+        top_points_result = await self.session.execute(top_points_query)
+        top_point_customers = [
+            TopPointCustomerDTO(customer_name=row.customer_name, value=int(row.value or 0))
+            for row in top_points_result.all()
+        ]
+
         monthly_query = (
             select(
                 extract("year", TransactionEntity.created_at).label("year"),
                 extract("month", TransactionEntity.created_at).label("month"),
-                func.sum(TransactionEntity.total).label("sales_total")
+                func.sum(TransactionEntity.total).label("sales_total"),
+                func.sum(TransactionEntity.tax_value).label("tax_total"),
+                func.sum(
+                    case(
+                        (EnumTableEntity.name == "Credit", TransactionEntity.total),
+                        else_=0
+                    )
+                ).label("credit_total")
             )
+            .outerjoin(CustomerEntity, TransactionEntity.customer_id == CustomerEntity.id)
+            .outerjoin(EnumTableEntity, CustomerEntity.type_id == EnumTableEntity.id)
             .where(TransactionEntity.deleted_at == None)
             .where(TransactionEntity.created_at >= start_month)
             .where(TransactionEntity.created_at <= end_month)
@@ -213,6 +339,8 @@ class TransactionRepository:
                 None
             )
             month_totals.append(float(match.sales_total) if match and match.sales_total else 0.0)
+            month_tax.append(float(match.tax_total) if match and match.tax_total else 0.0)
+            month_credit.append(float(match.credit_total) if match and match.credit_total else 0.0)
             month_profits.append(float(profit_match.net_profit) if profit_match and profit_match.net_profit else 0.0)
 
             # move to next month
@@ -308,9 +436,13 @@ class TransactionRepository:
             labels=labels,
             month_labels=month_labels,
             month_totals=month_totals,
+            month_tax=month_tax,
+            month_credit=month_credit,
             month_profits=month_profits,
             top_products_by_quantity=top_products_by_quantity,
-            top_products_by_revenue=top_products_by_revenue
+            top_products_by_revenue=top_products_by_revenue,
+            top_credit_customers=top_credit_customers,
+            top_point_customers=top_point_customers,
         )
         
 

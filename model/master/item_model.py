@@ -1,7 +1,7 @@
 from decimal import Decimal
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text, Numeric
 from sqlalchemy.ext.declarative import declarative_base
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -64,17 +64,42 @@ class ItemDTO(BaseModel):
     selling_price: Decimal = Decimal("0.00")
 
 class ItemImportDTO(BaseModel):
-    uom_id: int
-    category_id: int
-    code: str | None = None
+    uom_name: str
+    category_name: str
     name: str
-    barcode: str | None = None 
-    brand: str | None = None
-    description: str | None = None 
-    minimum_stock: int | None = 0
-    stock: int | None = 0
-    cost_price: float | None = 0.0
-    selling_price: float | None = 0.0
+    code: str | None = None
+    barcode: str | None = None
+    brand: str
+    description: str | None = None
+    minimum_stock: int
+    stock: int
+    cost_price: Decimal
+    selling_price: Decimal
+
+    @validator("uom_name", "category_name", "name", "brand")
+    def validate_required_text(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("field must not be empty")
+        return value
+
+    @validator("name")
+    def validate_name_length(cls, value: str) -> str:
+        if len(value) > 255:
+            raise ValueError("name must be at most 255 characters")
+        return value
+
+    @validator("brand")
+    def validate_brand_length(cls, value: str) -> str:
+        if len(value) > 100:
+            raise ValueError("brand must be at most 100 characters")
+        return value
+
+    @validator("code", "barcode")
+    def validate_optional_code_length(cls, value: str | None) -> str | None:
+        if value is not None and len(value) > 50:
+            raise ValueError("code and barcode must be at most 50 characters")
+        return value
 
 
 class ItemResponseDTO(BaseModel):

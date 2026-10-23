@@ -43,6 +43,13 @@ class TransactionEntity(Base):
         return self.customer.name if self.customer else None
 
     @property
+    def customer_type(self) -> str:
+        try:
+            return self.customer.type_name if self.customer else None
+        except Exception:
+            return None 
+
+    @property
     def tax_name(self) -> str:
         return self.tax.name if self.tax else None
 
@@ -51,7 +58,6 @@ class TransactionDTO(BaseModel):
     customer_id: int
     payment_method: str = "cash"
     discount: Decimal = Decimal("0.00")
-    customer_id: int
     tax_id: Optional[int] = None
     tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
@@ -69,20 +75,36 @@ class TopProductDTO(BaseModel):
     net_profit: Decimal
     average_price: Decimal
 
+
+class TopCreditCustomerDTO(BaseModel):
+    customer_name: str
+    value: Decimal
+
+
+class TopPointCustomerDTO(BaseModel):
+    customer_name: str
+    value: int
+
+
 class TransactionDashboardPerDayDTO(BaseModel):
     labels: List[str]
     month_labels: Optional[List[str]] = None
     month_totals: Optional[List[Decimal]] = None
+    month_tax: Optional[List[Decimal]] = None
+    month_credit: Optional[List[Decimal]] = None
     month_profits: Optional[List[Decimal]] = None
     items_sold: Optional[List[int]] = None   # number of products sold per day
     totals: Optional[List[Decimal]] = None   # total revenue per day
     top_products_by_quantity: Optional[List[TopProductDTO]] = None  # top 5 products by quantity
     top_products_by_revenue: Optional[List[TopProductDTO]] = None  # top 5 products by revenue
+    top_credit_customers: Optional[List[TopCreditCustomerDTO]] = None
+    top_point_customers: Optional[List[TopPointCustomerDTO]] = None
 
 class TransactionResponseDTO(BaseModel):
     id: int
     customer_id: int
     customer_name: Optional[str]
+    customer_type: Optional[str]
     payment_method: str = "cash"
     discount: Decimal = Decimal("0.00")
     customer_id: int

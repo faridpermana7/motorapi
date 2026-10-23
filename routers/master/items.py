@@ -30,7 +30,7 @@ async def bulk_import_items(data: list[ItemImportDTO], service: ItemService = De
     result = await service.bulk_import_items(data, user=current_user.username)
     if not result:
         raise HTTPException(status_code=400, detail="Failed to import items")
-    return {"status": "success", "count": len(result)}
+    return result
 
 @router.get("/items", response_model=List[ItemResponseDTO])
 async def list_items(service: ItemService = Depends(get_item_service),

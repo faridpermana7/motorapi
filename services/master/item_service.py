@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
-from http.client import HTTPException
+from fastapi import HTTPException
 
-from sqlalchemy import insert, null
+from sqlalchemy import func, null
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
@@ -72,54 +72,150 @@ class ItemRepository:
     
     async def bulk_import_items(self, items: list[ItemImportDTO], user: str = None):
         try:
-            # Preprocess rows into dicts
-            entities_data = []
             now = datetime.utcnow()
+            enum_cache = {}
+            imported_count = 0
 
-            i=1
-            for data in items:
-                # 1. Validate enums
-                if not await check_enum_exists(self.session, data.uom_id):
-                    continue
-                if not await check_enum_exists(self.session, data.category_id):
-                    continue
-
-                # 2. Generate code
-                category = await self.get_category_id(data.category_id)
-                category_code = category.type[:3].upper() if category else "COD"
-                date_code = now.strftime("%Y%m%d")
-                timestamp_code = now.strftime("%H%M%S")
-                code = f"{category_code}-{date_code}-{timestamp_code}-{i:03d}"  # Add sequence number to ensure uniqueness
-                i += 1
-
-                # 3. Prepare dict for bulk insert
-                entities_data.append({
-                    "uom_id": data.uom_id,
-                    "category_id": data.category_id,
+            for index, data in enumerate(items, start=1):
+                required_fields = {
+                    "UOM": data.uom_name,
+                    "category": data.category_name,
                     "name": data.name,
-                    "code": code,
-                    "barcode": data.barcode if data.barcode else f"BAR-{code}",
                     "brand": data.brand,
-                    "description": data.description,
-                    "minimum_stock": data.minimum_stock,
-                    "stock": data.stock,
-                    "cost_price": data.cost_price,
-                    "selling_price": data.selling_price,
-                    "created_at": now,
-                    "created_by": user,
-                })
+                }
+                for field_name, value in required_fields.items():
+                    if not isinstance(value, str) or not value.strip():
+                        raise HTTPException(
+                            status_code=400,
+                            detail=f"Row {index}: {field_name} is required",
+                        )
 
-            # 🔹 Bulk insert in one query
-            if entities_data:
-                stmt = insert(ItemEntity).values(entities_data)
-                await self.session.execute(stmt)
-                await self.session.commit()
+                uom_name = data.uom_name.strip()
+                category_name = data.category_name.strip()
+                name = data.name.strip()
 
-            return {"status": "success", "count": len(entities_data)}
+                uom_key = ("UOM", uom_name.casefold())
+                category_key = ("ItemCategory", category_name.casefold())
+                if uom_key not in enum_cache:
+                    enum_cache[uom_key] = await self._get_or_create_import_enum(
+                        "UOM", uom_name, user
+                    )
+                if category_key not in enum_cache:
+                    enum_cache[category_key] = await self._get_or_create_import_enum(
+                        "ItemCategory", category_name, user
+                    )
 
+                uom = enum_cache[uom_key]
+                category = enum_cache[category_key]
+                category_code = category.type[:3].upper() if category else "COD"
+                generated_code = f"{category_code}-{now:%Y%m%d-%H%M%S}-{index:03d}"
+                provided_code = data.code.strip() if data.code and data.code.strip() else None
+                provided_barcode = (
+                    data.barcode.strip()
+                    if data.barcode and data.barcode.strip()
+                    else None
+                )
+                entity = await self._find_import_item(
+                    barcode=provided_barcode,
+                    name=name,
+                    category_id=category.id,
+                )
+
+                if entity:
+                    entity.uom_id = uom.id
+                    entity.category_id = category.id
+                    entity.name = name
+                    if provided_code:
+                        entity.code = provided_code
+                    if provided_barcode:
+                        entity.barcode = provided_barcode
+                    entity.brand = data.brand
+                    entity.description = data.description
+                    entity.minimum_stock = data.minimum_stock
+                    entity.stock = data.stock
+                    entity.cost_price = data.cost_price
+                    entity.selling_price = data.selling_price
+                    entity.updated_at = now
+                    entity.updated_by = user
+                else:
+                    entity = ItemEntity(
+                        uom_id=uom.id,
+                        category_id=category.id,
+                        name=name,
+                        code=provided_code or generated_code,
+                        barcode=provided_barcode or f"BAR-{provided_code or generated_code}",
+                        brand=data.brand,
+                        description=data.description,
+                        minimum_stock=data.minimum_stock,
+                        stock=data.stock,
+                        cost_price=data.cost_price,
+                        selling_price=data.selling_price,
+                        created_at=now,
+                        created_by=user,
+                    )
+                    self.session.add(entity)
+
+                await self.session.flush()
+                imported_count += 1
+
+            await self.session.commit()
+
+            return {"status": "success", "count": imported_count}
+
+        except HTTPException:
+            await self.session.rollback()
+            raise
         except Exception as e:
             await self.session.rollback()
             raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")  
+
+    async def _find_import_item(
+        self, barcode: Optional[str], name: str, category_id: int
+    ) -> Optional[ItemEntity]:
+        active_item = ItemEntity.deleted_at == null()
+
+        if barcode:
+            result = await self.session.execute(
+                select(ItemEntity).where(
+                    active_item,
+                    func.lower(func.trim(ItemEntity.barcode)) == barcode.casefold(),
+                )
+            )
+            entity = result.scalars().first()
+            if entity:
+                return entity
+
+        result = await self.session.execute(
+            select(ItemEntity).where(
+                active_item,
+                ItemEntity.category_id == category_id,
+                func.lower(func.trim(ItemEntity.name)) == name.casefold(),
+            )
+        )
+        return result.scalars().first()
+
+    async def _get_or_create_import_enum(self, enum_type: str, name: str, user: str):
+        result = await self.session.execute(
+            select(EnumTableEntity).where(
+                EnumTableEntity.type == enum_type,
+                func.lower(func.trim(EnumTableEntity.name)) == name.casefold(),
+                EnumTableEntity.deleted_at == null(),
+            )
+        )
+        entity = result.scalars().first()
+        if entity:
+            return entity
+
+        entity = EnumTableEntity(
+            type=enum_type,
+            name=name,
+            description=f"Auto-created {enum_type} for import",
+            created_at=datetime.utcnow(),
+            created_by=user,
+        )
+        self.session.add(entity)
+        await self.session.flush()
+        return entity
 
     async def get_all_items(self) -> List[ItemResponseDTO]:
         query = select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)).where(ItemEntity.deleted_at == null())
