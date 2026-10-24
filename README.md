@@ -79,3 +79,41 @@ Open interactive docs at http://127.0.0.1:9999/docs
 
 ## Testing Authentication
 running as server by task schedule manager with run_server.bat
+
+
+## Running as Service NSSM
+
+### configure the user local first
+Step 1: Grant "Log on as a service" RightsMethod A: Using Local Security Policy (Windows Pro / Enterprise)
+1. Press Win + R, type secpol.msc, and press Enter.
+2. In the left panel, navigate to:Local Policies $\rightarrow$ User Rights Assignment.
+3. In the right panel, double-click Log on as a service.
+4. Click Add User or Group....
+5. Type your local username (e.g., pfar or farid.permana@outlook.com) into the box and click Check Names.   
+6. Click OK, then Apply, and close the window.
+
+### register the service
+Open an Administrator Command Prompt (cmd) and install the service:
+
+DOS
+C:\tools\nssm.exe install MotorApiService
+In the NSSM configuration window, fill out these fields:
+
+Path: cmd.exe
+
+Startup directory: D:\project\motorapi
+
+Arguments: /c start_service.bat
+
+Crucial (Logon Tab): Because this service needs to control VirtualBox, go to the Logon tab, select This account, and enter your actual Windows Username and Password (otherwise the service cannot access VirtualBox VMs tied to your profile).
+
+Optional (I/O Tab): Set your log output path so NSSM captures everything into one unified file:
+
+Stdout / Stderr: D:\project\motorapi\server.log
+
+Click Install service.
+
+Managing Your Unified Service
+To Start/Stop: Open services.msc, find MotorApiService, and start it. It will automatically spin up your database VM, wait for it, clear port 9999, and launch your API with full timestamps in server.log.
+
+To remove any old separate database service you made earlier: Run nssm remove FarbuntuDatabaseService confirm in your terminal to keep your system clean.
