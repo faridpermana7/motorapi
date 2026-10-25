@@ -7,7 +7,11 @@ from typing import List, Optional
 
 from sqlalchemy.orm import relationship
 
-from model.transaction.transaction_item_model import TransactionItemDTO, TransactionItemEntity
+from model.transaction.transaction_item_model import (
+    TransactionItemDTO,
+    TransactionItemEntity,
+    TransactionItemResponseDTO,
+)
 from ..base_model import Base
 
 from .cashier_log_model import CashierLogEntity
@@ -52,6 +56,10 @@ class TransactionEntity(Base):
     @property
     def tax_name(self) -> str:
         return self.tax.name if self.tax else None
+
+    @property
+    def items(self) -> List[TransactionItemEntity]:
+        return self.transaction_transaction_items
 
 # Transaction DTO (API Model)
 class TransactionDTO(BaseModel):
@@ -107,12 +115,11 @@ class TransactionResponseDTO(BaseModel):
     customer_type: Optional[str]
     payment_method: str = "cash"
     discount: Decimal = Decimal("0.00")
-    customer_id: int
     tax_id: Optional[int] = None
     tax_name: Optional[str]
     tax_value: Decimal = Decimal("0.00")
     total: Decimal = Decimal("0.00")
-    items: Optional[List[TransactionItemDTO]] = None
+    items: Optional[List[TransactionItemResponseDTO]] = None
     
     created_at: Optional[datetime]
     created_by: Optional[str]

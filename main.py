@@ -76,4 +76,4 @@ app.include_router(cashier_logs.router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=9999)
+    uvicorn.run(app, host="0.0.0.0", port=9999, log_config="log_config.json")

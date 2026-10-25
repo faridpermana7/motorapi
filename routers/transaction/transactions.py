@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
+from model.pagination_model import PaginationResponseDTO
 from model.transaction.transaction_model import TransactionDTO, TransactionDashboardPerDayDTO, TransactionResponseDTO
 from model.auth_model import UserInDB
-from typing import List
+from typing import List, Literal, Optional
 from core.database_sqlalchemy import get_db
 from services.auth_service import get_current_user
 from services.transaction.transaction_service import TransactionService, TransactionRepository
@@ -36,6 +37,27 @@ async def list_transactions(service: TransactionService = Depends(get_transactio
     except Exception as e:
         # catch any other unexpected errors
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+
+@router.get(
+    "/transactions/pagination",
+    response_model=PaginationResponseDTO[TransactionResponseDTO],
+)
+async def list_transactions_paginated(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    search: Optional[str] = None,
+    sort_by: Literal[
+        "id", "name", "code", "barcode", "brand", "stock",
+        "cost_price", "selling_price", "created_at",
+    ] = "id",
+    sort_order: Literal["asc", "desc"] = "asc",
+    service: TransactionService = Depends(get_transaction_service),
+    current_user: UserInDB = Depends(get_current_user),
+):
+    return await service.get_paginated_transactions(
+        skip, limit, search, sort_by, sort_order
+    )
 
 
 @router.get("/transactions/dashboard/perday", response_model=TransactionDashboardPerDayDTO)

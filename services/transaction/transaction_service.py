@@ -13,6 +13,7 @@ from model.master.customer_model import CustomerEntity
 from model.master.enum_table_model import EnumTableEntity
 from model.master.item_model import ItemEntity
 from model.admin.configuration_model import ConfigurationEntity
+from model.pagination_model import PaginationResponseDTO
 from model.transaction.transaction_item_model import TransactionItemEntity
 from model.transaction.transaction_model import (
     TopCreditCustomerDTO,
@@ -126,7 +127,10 @@ class TransactionRepository:
                 select(TransactionEntity)
                 .options(
                     selectinload(TransactionEntity.customer).selectinload(CustomerEntity.type), 
-                    selectinload(TransactionEntity.tax)
+                    selectinload(TransactionEntity.tax),
+                    selectinload(
+                        TransactionEntity.transaction_transaction_items
+                    ).selectinload(TransactionItemEntity.item),
                 )
                 .where(TransactionEntity.deleted_at == null())
             )
@@ -444,25 +448,103 @@ class TransactionRepository:
             top_credit_customers=top_credit_customers,
             top_point_customers=top_point_customers,
         )
-        
+
+    async def get_paginated_transactions(
+            self,
+            skip: int,
+            limit: int,
+            search: Optional[str],
+            sort_by: str,
+            sort_order: str,
+        ) -> PaginationResponseDTO[TransactionResponseDTO]:
+            sort_columns = {
+                "id": TransactionEntity.id,
+                "customer_name": TransactionEntity.customer_name,
+                "customer_type": TransactionEntity.customer_type,
+                "payment_method": TransactionEntity.payment_method,
+                "discount": TransactionEntity.discount,
+                "tax_value": TransactionEntity.tax_value,
+                "tax_name": TransactionEntity.tax_name,
+                "total": TransactionEntity.total,
+                "created_at": TransactionEntity.created_at,
+            }
+            sort_column = sort_columns.get(sort_by)
+            if sort_column is None:
+                raise HTTPException(status_code=400, detail="Unsupported sort field")
+
+            conditions = [TransactionEntity.deleted_at == null()]
+            search_term = search.strip() if search else ""
+            if search_term:
+                search_pattern = f"%{search_term}%"
+                conditions.append(
+                    or_(
+                        TransactionEntity.customer_name.ilike(search_pattern),
+                        TransactionEntity.customer_type.ilike(search_pattern),
+                        TransactionEntity.payment_method.ilike(search_pattern),
+                        TransactionEntity.discount.ilike(search_pattern),
+                        TransactionEntity.tax_value.ilike(search_pattern),
+                        TransactionEntity.tax_name.ilike(search_pattern),
+                        TransactionEntity.total_amount.ilike(search_pattern),
+                    )
+                )
+
+            total_result = await self.session.execute(
+                select(func.count(TransactionEntity.id)).where(*conditions)
+            )
+            total = total_result.scalar_one()
+
+            order_expression = (
+                sort_column.desc() if sort_order == "desc" else sort_column.asc()
+            )
+            query = (
+                select(TransactionEntity)
+                .options(
+                    selectinload(TransactionEntity.customer).selectinload(CustomerEntity.type),
+                    selectinload(TransactionEntity.tax),
+                    selectinload(
+                        TransactionEntity.transaction_transaction_items
+                    ).selectinload(TransactionItemEntity.item),
+                )
+                .where(*conditions)
+                .order_by(order_expression, TransactionEntity.id.asc())
+                .offset(skip)
+                .limit(limit)
+            )
+            result = await self.session.execute(query)
+            entities = result.scalars().all()
+
+            return PaginationResponseDTO[TransactionResponseDTO](
+                records=[TransactionResponseDTO.from_orm(entity) for entity in entities],
+                total=total,
+                skip=skip,
+                limit=limit,
+            )
 
     async def get_transaction_by_id(self, transaction_id: int) -> Optional[TransactionResponseDTO]: 
-        query = select(TransactionEntity).options(selectinload(TransactionEntity.customer), 
-                                                  selectinload(TransactionEntity.tax)
-                                                  ).where(TransactionEntity.deleted_at == null()
-                                                          ).filter(TransactionEntity.id == transaction_id)
+        query = (
+            select(TransactionEntity)
+            .options(
+                selectinload(TransactionEntity.customer).selectinload(CustomerEntity.type),
+                selectinload(TransactionEntity.tax),
+                selectinload(
+                    TransactionEntity.transaction_transaction_items
+                ).selectinload(TransactionItemEntity.item),
+            )
+            .where(
+                TransactionEntity.deleted_at == null(),
+                TransactionEntity.id == transaction_id,
+            )
+        )
         result = await self.session.execute(query)
         entity = result.scalars().first()
         return TransactionResponseDTO.from_orm(entity) if entity else None
     
-
     async def get_last_transaction_by_id(self, user_id: int) -> Optional[TransactionResponseDTO]: 
         query = select(TransactionEntity).where(TransactionEntity.deleted_at == null()).filter(TransactionEntity.user_id == user_id).order_by(TransactionEntity.time.desc())
         result = await self.session.execute(query)
         entity = result.scalars().first()
         return TransactionResponseDTO.from_orm(entity) if entity else None
 
-    
     async def update_transaction(
         self, transaction_id: int, data: TransactionDTO, user: str = None
     ) -> Optional[TransactionResponseDTO]:
@@ -584,7 +666,6 @@ class TransactionRepository:
         await self.session.refresh(entity)
         return True
     
-
     async def delete_transaction(self, transaction_id: int) -> bool:
         result = await self.session.execute(select(TransactionEntity).where(TransactionEntity.id == transaction_id))
         entity = result.scalars().first()
@@ -603,6 +684,18 @@ class TransactionService:
 
     async def get_all_transactions(self) -> List[TransactionResponseDTO]:
         return await self.repo.get_all_transactions()
+
+    async def get_paginated_transactions(
+        self,
+        skip: int,
+        limit: int,
+        search: Optional[str],
+        sort_by: str,
+        sort_order: str,
+    ) -> PaginationResponseDTO[TransactionResponseDTO]:
+        return await self.repo.get_paginated_transactions(
+            skip, limit, search, sort_by, sort_order
+        )
 
     async def get_dashboard_data(self) -> TransactionDashboardPerDayDTO:
         return await self.repo.get_dashboard_data()

@@ -1,14 +1,20 @@
 from datetime import datetime, timezone
 from fastapi import HTTPException
 
-from sqlalchemy import func, null
+from sqlalchemy import func, null, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
 
 from sqlalchemy.orm import selectinload
-from model.master.item_model import ItemEntity, ItemDTO, ItemImportDTO, ItemResponseDTO
+from model.master.item_model import (
+    ItemEntity,
+    ItemDTO,
+    ItemImportDTO,
+    ItemResponseDTO,
+)
 from model.master.enum_table_model import EnumTableEntity, EnumTableResponseDTO
+from model.pagination_model import PaginationResponseDTO
 
 
 async def check_enum_exists(session: AsyncSession, enum_id: int) -> bool:
@@ -223,6 +229,74 @@ class ItemRepository:
         entities = result.scalars().all()
         return [ItemResponseDTO.from_orm(e) for e in entities]
     
+    async def get_all_items_stock(self) -> List[ItemResponseDTO]:
+        query = select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)).where(ItemEntity.deleted_at == null() & ItemEntity.stock <= ItemEntity.minimum_stock)
+        result = await self.session.execute(query)
+        entities = result.scalars().all()
+        return [ItemResponseDTO.from_orm(e) for e in entities]
+
+    async def get_paginated_items(
+        self,
+        skip: int,
+        limit: int,
+        search: Optional[str],
+        sort_by: str,
+        sort_order: str,
+    ) -> PaginationResponseDTO[ItemResponseDTO]:
+        sort_columns = {
+            "id": ItemEntity.id,
+            "name": ItemEntity.name,
+            "code": ItemEntity.code,
+            "barcode": ItemEntity.barcode,
+            "brand": ItemEntity.brand,
+            "stock": ItemEntity.stock,
+            "cost_price": ItemEntity.cost_price,
+            "selling_price": ItemEntity.selling_price,
+            "created_at": ItemEntity.created_at,
+        }
+        sort_column = sort_columns.get(sort_by)
+        if sort_column is None:
+            raise HTTPException(status_code=400, detail="Unsupported sort field")
+
+        conditions = [ItemEntity.deleted_at == null()]
+        search_term = search.strip() if search else ""
+        if search_term:
+            search_pattern = f"%{search_term}%"
+            conditions.append(
+                or_(
+                    ItemEntity.name.ilike(search_pattern),
+                    ItemEntity.code.ilike(search_pattern),
+                    ItemEntity.barcode.ilike(search_pattern),
+                    ItemEntity.brand.ilike(search_pattern),
+                    ItemEntity.description.ilike(search_pattern),
+                )
+            )
+
+        total_result = await self.session.execute(
+            select(func.count(ItemEntity.id)).where(*conditions)
+        )
+        total = total_result.scalar_one()
+
+        order_expression = (
+            sort_column.desc() if sort_order == "desc" else sort_column.asc()
+        )
+        query = (
+            select(ItemEntity)
+            .options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category))
+            .where(*conditions)
+            .order_by(order_expression, ItemEntity.id.asc())
+            .offset(skip)
+            .limit(limit)
+        )
+        result = await self.session.execute(query)
+        entities = result.scalars().all()
+
+        return PaginationResponseDTO[ItemResponseDTO](
+            records=[ItemResponseDTO.from_orm(entity) for entity in entities],
+            total=total,
+            skip=skip,
+            limit=limit,
+        )
     
     async def get_category_id(self, category_id: int) -> Optional[EnumTableResponseDTO]: 
         query = select(EnumTableEntity).where(EnumTableEntity.id == category_id)
@@ -236,7 +310,6 @@ class ItemRepository:
         entity = result.scalars().first()
         return ItemResponseDTO.from_orm(entity) if entity else None
     
-
     async def get_last_item_by_id(self, user_id: int) -> Optional[ItemResponseDTO]: 
         query = select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)).where(ItemEntity.deleted_at == null()).filter(ItemEntity.user_id == user_id).order_by(ItemEntity.time.desc())
         result = await self.session.execute(query)
@@ -283,7 +356,6 @@ class ItemRepository:
         await self.session.refresh(entity)
         return True
     
-
     async def delete_item(self, item_id: int) -> bool:
         result = await self.session.execute(select(ItemEntity).where(ItemEntity.id == item_id))
         entity = result.scalars().first()
@@ -305,6 +377,21 @@ class ItemService:
 
     async def get_all_items(self) -> List[ItemResponseDTO]:
         return await self.repo.get_all_items()
+    
+    async def get_all_items_stock(self) -> List[ItemResponseDTO]:
+        return await self.repo.get_all_items_stock()
+
+    async def get_paginated_items(
+        self,
+        skip: int,
+        limit: int,
+        search: Optional[str],
+        sort_by: str,
+        sort_order: str,
+    ) -> PaginationResponseDTO[ItemResponseDTO]:
+        return await self.repo.get_paginated_items(
+            skip, limit, search, sort_by, sort_order
+        )
 
     async def get_item_by_id(self, item_id: int) -> Optional[ItemResponseDTO]:
         return await self.repo.get_item_by_id(item_id) 

@@ -1,7 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends
-from model.master.item_model import ItemDTO, ItemImportDTO, ItemResponseDTO
+from fastapi import APIRouter, HTTPException, Depends, Query
+from model.master.item_model import (
+    ItemDTO,
+    ItemImportDTO,
+    ItemResponseDTO,
+)
 from model.auth_model import UserInDB
-from typing import List
+from model.pagination_model import PaginationResponseDTO
+from typing import List, Literal, Optional
 from core.database_sqlalchemy import get_db
 from services.auth_service import get_current_user
 from services.master.item_service import ItemService, ItemRepository
@@ -37,6 +42,32 @@ async def list_items(service: ItemService = Depends(get_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_items()
+    
+@router.get("/items/stock", response_model=List[ItemResponseDTO])
+async def list_items_stock(service: ItemService = Depends(get_item_service),
+                           current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
+                           ):
+    return await service.get_all_items_stock()
+
+@router.get(
+    "/items/pagination",
+    response_model=PaginationResponseDTO[ItemResponseDTO],
+)
+async def list_items_paginated(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    search: Optional[str] = None,
+    sort_by: Literal[
+        "id", "name", "code", "barcode", "brand", "stock",
+        "cost_price", "selling_price", "created_at",
+    ] = "id",
+    sort_order: Literal["asc", "desc"] = "asc",
+    service: ItemService = Depends(get_item_service),
+    current_user: UserInDB = Depends(get_current_user),
+):
+    return await service.get_paginated_items(
+        skip, limit, search, sort_by, sort_order
+    )
 
 @router.get("/items/{item_id}", response_model=ItemResponseDTO)
 async def get_item(item_id: int, service: ItemService = Depends(get_item_service),

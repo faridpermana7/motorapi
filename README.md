@@ -10,7 +10,7 @@ Run locally:
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -r requirements.txt
-python -m uvicorn main:app --host 127.0.0.1 --port 9999
+python -m uvicorn main:app --host 127.0.0.1 --port 9999 --log-config log_config.json
 ```
 
 ## Authentication
@@ -45,6 +45,8 @@ Authorization: Bearer <access_token>
 - The `/auth/me` endpoint returns current user information
 
 ## API Endpoints
+
+Paged responses use the reusable `PaginationResponseDTO[RecordDTO]` model, so endpoints can paginate item, transaction, enum, or other response DTOs without defining a separate pagination model for each entity.
 
 ### Authentication
 - `POST /auth/login` — Login with username/password
@@ -103,17 +105,15 @@ Path: cmd.exe
 
 Startup directory: D:\project\motorapi
 
-Arguments: /c start_service.bat
+Arguments: /c run_server.bat
 
 Crucial (Logon Tab): Because this service needs to control VirtualBox, go to the Logon tab, select This account, and enter your actual Windows Username and Password (otherwise the service cannot access VirtualBox VMs tied to your profile).
 
-Optional (I/O Tab): Set your log output path so NSSM captures everything into one unified file:
-
-Stdout / Stderr: D:\project\motorapi\server.log
+Leave the NSSM I/O Tab's Stdout and Stderr paths empty. Uvicorn writes logs to `logs\server.log` with a timestamp and severity level (`INFO`, `WARNING`, `ERROR`, etc.), creating a new dated log file at midnight (for example, `server.log.2026-10-25`).
 
 Click Install service.
 
 Managing Your Unified Service
-To Start/Stop: Open services.msc, find MotorApiService, and start it. It will automatically spin up your database VM, wait for it, clear port 9999, and launch your API with full timestamps in server.log.
+To Start/Stop: Open services.msc, find MotorApiService, and start it. The startup script checks whether the database VM is already running and starts it only if it is off, then clears port 9999 and launches the API. Restarting the API service does not reboot a running VM. Daily logs are stored and rotated in `D:\project\motorapi\logs`.
 
 To remove any old separate database service you made earlier: Run nssm remove FarbuntuDatabaseService confirm in your terminal to keep your system clean.

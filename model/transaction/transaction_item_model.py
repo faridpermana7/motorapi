@@ -54,7 +54,7 @@ class TransactionItemResponseDTO(BaseModel):
     transaction_id: int
     item_id: int
     item_name: Optional[str] = None
-    item_stock: int
+    item_stock: Optional[int] = None
     item_code: Optional[str] = None
     item_barcode: Optional[str] = None
     quantity: int
