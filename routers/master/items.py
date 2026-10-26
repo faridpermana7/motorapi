@@ -19,7 +19,7 @@ def get_item_service(db: AsyncSession = Depends(get_db)) -> ItemService:
     repo = ItemRepository(db)
     return ItemService(repo)
 
-@router.post("/items", response_model=ItemResponseDTO)
+@router.post("", response_model=ItemResponseDTO)
 async def create_item(data: ItemDTO, service: ItemService = Depends(get_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -28,7 +28,7 @@ async def create_item(data: ItemDTO, service: ItemService = Depends(get_item_ser
         raise HTTPException(status_code=400, detail="Failed to create item")
     return result
 
-@router.post("/items/import")
+@router.post("/import")
 async def bulk_import_items(data: list[ItemImportDTO], service: ItemService = Depends(get_item_service),
                             current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                             ):
@@ -37,20 +37,19 @@ async def bulk_import_items(data: list[ItemImportDTO], service: ItemService = De
         raise HTTPException(status_code=400, detail="Failed to import items")
     return result
 
-@router.get("/items", response_model=List[ItemResponseDTO])
+@router.get("", response_model=List[ItemResponseDTO])
 async def list_items(service: ItemService = Depends(get_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_items()
     
-@router.get("/items/stock", response_model=List[ItemResponseDTO])
+@router.get("/stocks", response_model=List[ItemResponseDTO])
 async def list_items_stock(service: ItemService = Depends(get_item_service),
                            current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                            ):
     return await service.get_all_items_stock()
 
-@router.get(
-    "/items/pagination",
+@router.get("/pagination",
     response_model=PaginationResponseDTO[ItemResponseDTO],
 )
 async def list_items_paginated(
@@ -69,7 +68,7 @@ async def list_items_paginated(
         skip, limit, search, sort_by, sort_order
     )
 
-@router.get("/items/{item_id}", response_model=ItemResponseDTO)
+@router.get("{item_id}", response_model=ItemResponseDTO)
 async def get_item(item_id: int, service: ItemService = Depends(get_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -78,7 +77,7 @@ async def get_item(item_id: int, service: ItemService = Depends(get_item_service
         raise HTTPException(status_code=404, detail="Item not found")
     return result
 
-@router.put("/items/{item_id}", response_model=ItemResponseDTO)
+@router.put("/{item_id}", response_model=ItemResponseDTO)
 async def update_item(item_id: int, data: ItemDTO, service: ItemService = Depends(get_item_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):
@@ -87,7 +86,7 @@ async def update_item(item_id: int, data: ItemDTO, service: ItemService = Depend
         raise HTTPException(status_code=404, detail="Item not found")
     return result
 
-@router.put("/items/softdel/{item_id}")
+@router.put("/softdel/{item_id}")
 async def delete_soft_item(item_id: int, service: ItemService = Depends(get_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -96,7 +95,7 @@ async def delete_soft_item(item_id: int, service: ItemService = Depends(get_item
         raise HTTPException(status_code=404, detail="Item not found")
     return {"message": "Item deleted"}
 
-@router.delete("/items/{item_id}")
+@router.delete("/{item_id}")
 async def delete_item(item_id: int, service: ItemService = Depends(get_item_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):

@@ -14,7 +14,7 @@ def get_configuration_service(db: AsyncSession = Depends(get_db)) -> Configurati
     repo = ConfigurationRepository(db)
     return ConfigurationService(repo)
 
-@router.post("/configurations", response_model=ConfigurationResponseDTO)
+@router.post("", response_model=ConfigurationResponseDTO)
 async def create_configuration(data: ConfigurationDTO, service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_configuration(data: ConfigurationDTO, service: ConfigurationSer
         raise HTTPException(status_code=400, detail="Failed to create configuration")
     return result
 
-@router.get("/configurations", response_model=List[ConfigurationResponseDTO])
+@router.get("", response_model=List[ConfigurationResponseDTO])
 async def list_configurations(service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_configurations()
 
-@router.get("/configurations/{configuration_id}", response_model=ConfigurationResponseDTO)
+@router.get("/{configuration_id}", response_model=ConfigurationResponseDTO)
 async def get_configuration(configuration_id: int, service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -39,7 +39,7 @@ async def get_configuration(configuration_id: int, service: ConfigurationService
     return result
 
 
-@router.put("/configurations/list", response_model=List[ConfigurationResponseDTO])
+@router.put("/list", response_model=List[ConfigurationResponseDTO])
 async def update_configuration_list(data: List[ConfigurationDTO], service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -48,7 +48,7 @@ async def update_configuration_list(data: List[ConfigurationDTO], service: Confi
         raise HTTPException(status_code=404, detail="Configuration not found")
     return result
 
-@router.put("/configurations/{configuration_id}", response_model=ConfigurationResponseDTO)
+@router.put("/{configuration_id}", response_model=ConfigurationResponseDTO)
 async def update_configuration(configuration_id: int, data: ConfigurationDTO, service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -57,7 +57,7 @@ async def update_configuration(configuration_id: int, data: ConfigurationDTO, se
         raise HTTPException(status_code=404, detail="Configuration not found")
     return result
 
-@router.put("/configurations/softdel/{configuration_id}")
+@router.put("/softdel/{configuration_id}")
 async def delete_soft_configuration(configuration_id: int, service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -66,7 +66,7 @@ async def delete_soft_configuration(configuration_id: int, service: Configuratio
         raise HTTPException(status_code=404, detail="Configuration not found")
     return {"message": "Configuration deleted"}
 
-@router.delete("/configurations/{configuration_id}")
+@router.delete("/{configuration_id}")
 async def delete_configuration(configuration_id: int, service: ConfigurationService = Depends(get_configuration_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):

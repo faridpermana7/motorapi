@@ -55,24 +55,24 @@ async def validation_exception_handler(request, exc: RequestValidationError):
 app.include_router(auth.router, prefix="/auth", tags=["authentication"])
 
 # Admin
-app.include_router(logins.router)
-app.include_router(phrases.router)
-app.include_router(users.router)
-app.include_router(menus.router)
-app.include_router(configurations.router)
-app.include_router(roles.router)
+app.include_router(logins.router, prefix="/logins", tags=["logins"])
+app.include_router(phrases.router, prefix="/phrases", tags=["phrases"])
+app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(menus.router, prefix="/menus", tags=["menus"])
+app.include_router(configurations.router, prefix="/configurations", tags=["configurations"])
+app.include_router(roles.router, prefix="/roles", tags=["roles"])
 
 # Master
-app.include_router(weather.router)
-app.include_router(locations.router)
-app.include_router(enum_tables.router)
-app.include_router(items.router)
-app.include_router(customers.router)
+app.include_router(weather.router, prefix="/weather", tags=["weather"])
+app.include_router(locations.router, prefix="/locations", tags=["locations"])
+app.include_router(enum_tables.router, prefix="/enum_tables", tags=["enum-tables"])
+app.include_router(items.router, prefix="/items", tags=["items"])
+app.include_router(customers.router, prefix="/customers", tags=["customers"])
 
 # Transaction
-app.include_router(transactions.router)
-app.include_router(transaction_items.router)
-app.include_router(cashier_logs.router)
+app.include_router(transactions.router, prefix="/transactions", tags=["transactions"])
+app.include_router(transaction_items.router, prefix="/transaction_items", tags=["transaction-items"])
+app.include_router(cashier_logs.router, prefix="/cashier_logs", tags=["cashier-logs"])
 
 if __name__ == "__main__":
     import uvicorn

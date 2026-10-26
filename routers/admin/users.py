@@ -14,7 +14,7 @@ def get_user_service(db: AsyncSession = Depends(get_db)) -> UserService:
     repo = UserRepository(db)
     return UserService(repo)
 
-@router.post("/users", response_model=UserResponseDTO)
+@router.post("", response_model=UserResponseDTO)
 async def create_user(data: UserDTO, 
                       service: UserService = Depends(get_user_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
@@ -24,21 +24,21 @@ async def create_user(data: UserDTO,
         raise HTTPException(status_code=400, detail="Failed to create user")
     return result
 
-@router.get("/users", response_model=List[UserResponseDTO])
+@router.get("", response_model=List[UserResponseDTO])
 async def list_users(
     service: UserService = Depends(get_user_service),
     current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
     return await service.get_all_users()
 
-@router.get("/users/{user_id}", response_model=UserResponseDTO)
+@router.get("/{user_id}", response_model=UserResponseDTO)
 async def get_user(user_id: int, service: UserService = Depends(get_user_service)):
     result = await service.get_user_by_id(user_id)
     if not result:
         raise HTTPException(status_code=404, detail="User not found")
     return result
 
-@router.put("/users/{user_id}", response_model=UserResponseDTO)
+@router.put("/{user_id}", response_model=UserResponseDTO)
 async def update_user(user_id: int, data: UserDTO, service: UserService = Depends(get_user_service)
                       ,current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -47,7 +47,7 @@ async def update_user(user_id: int, data: UserDTO, service: UserService = Depend
         raise HTTPException(status_code=404, detail="User not found")
     return result
 
-@router.put("/users/softdel/{user_id}")
+@router.put("/softdel/{user_id}")
 async def delete_soft_user(user_id: int, service: UserService = Depends(get_user_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -56,7 +56,7 @@ async def delete_soft_user(user_id: int, service: UserService = Depends(get_user
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": "User deleted"}
 
-@router.delete("/users/{user_id}")
+@router.delete("/{user_id}")
 async def delete_hard_user(user_id: int, service: UserService = Depends(get_user_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):

@@ -57,7 +57,7 @@ class TransactionRepository:
         except (InvalidOperation, ValueError) as exc:
             raise HTTPException(
                 status_code=500,
-                detail="Invalid Application.points configuration",
+                detail="Invalid Transaction.points configuration",
             ) from exc
 
     async def create_transaction(self, data: TransactionDTO, user: str = None
@@ -152,7 +152,7 @@ class TransactionRepository:
 
         points_result = await self.session.execute(
             select(ConfigurationEntity.value).where(
-                ConfigurationEntity.module == "Application",
+                ConfigurationEntity.module == "Transaction",
                 ConfigurationEntity.attribute == "points",
                 ConfigurationEntity.deleted_at == None,
             )
@@ -161,18 +161,18 @@ class TransactionRepository:
         if not points_configurations:
             raise HTTPException(
                 status_code=500,
-                detail="Missing Application.points configuration",
+                detail="Missing Transaction.points configuration",
             )
         if len(points_configurations) != 1:
             raise HTTPException(
                 status_code=500,
-                detail="Multiple Application.points configurations found",
+                detail="Multiple Transaction.points configurations found",
             )
         points_configuration = points_configurations[0]
         if not isinstance(points_configuration, str) or not points_configuration.strip():
             raise HTTPException(
                 status_code=500,
-                detail="Invalid Application.points configuration",
+                detail="Invalid Transaction.points configuration",
             )
         point_tiers = self.parse_point_tiers(points_configuration)
 

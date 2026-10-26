@@ -14,7 +14,7 @@ def get_menu_service(db: AsyncSession = Depends(get_db)) -> MenuService:
     repo = MenuRepository(db)
     return MenuService(repo)
 
-@router.post("/menus", response_model=MenuResponseDTO)
+@router.post("", response_model=MenuResponseDTO)
 async def create_menu(data: MenuDTO, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,7 +23,7 @@ async def create_menu(data: MenuDTO, service: MenuService = Depends(get_menu_ser
         raise HTTPException(status_code=400, detail="Failed to create menu")
     return result
 
-@router.get("/menus/parents", response_model=List[MenuResponseDTO])
+@router.get("/parents", response_model=List[MenuResponseDTO])
 async def list_parent_menus(service: MenuService = Depends(get_menu_service),
                             current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                             ):
@@ -36,13 +36,13 @@ async def list_menu_trees(service: MenuService = Depends(get_menu_service),
                           ):
     return await service.get_menu_tree(current_user.id)
 
-@router.get("/menus", response_model=List[MenuResponseDTO])
+@router.get("", response_model=List[MenuResponseDTO])
 async def list_menus(service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_menus()
 
-@router.get("/menus/{menu_id}", response_model=MenuResponseDTO)
+@router.get("/{menu_id}", response_model=MenuResponseDTO)
 async def get_menu(menu_id: int, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -51,7 +51,7 @@ async def get_menu(menu_id: int, service: MenuService = Depends(get_menu_service
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return result
 
-@router.put("/menus/{menu_id}", response_model=MenuResponseDTO)
+@router.put("/{menu_id}", response_model=MenuResponseDTO)
 async def update_menu(menu_id: int, data: MenuDTO, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -61,7 +61,7 @@ async def update_menu(menu_id: int, data: MenuDTO, service: MenuService = Depend
     return result
 
 
-@router.put("/menus/softdel/{menu_id}")
+@router.put("/softdel/{menu_id}")
 async def delete_soft_menu(menu_id: int, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -70,7 +70,7 @@ async def delete_soft_menu(menu_id: int, service: MenuService = Depends(get_menu
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return {"message": "Enum Table deleted"}
 
-@router.delete("/menus/{menu_id}")
+@router.delete("/{menu_id}")
 async def delete_menu(menu_id: int, service: MenuService = Depends(get_menu_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):

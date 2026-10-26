@@ -14,7 +14,7 @@ def get_enum_table_service(db: AsyncSession = Depends(get_db)) -> EnumTableServi
     repo = EnumTableRepository(db)
     return EnumTableService(repo)
 
-@router.post("/enum_tables", response_model=EnumTableResponseDTO)
+@router.post("", response_model=EnumTableResponseDTO)
 async def create_enum_table(data: EnumTableDTO, service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_enum_table(data: EnumTableDTO, service: EnumTableService = Depe
         raise HTTPException(status_code=400, detail="Failed to create enum_table")
     return result
 
-@router.get("/enum_tables", response_model=List[EnumTableResponseDTO])
+@router.get("", response_model=List[EnumTableResponseDTO])
 async def list_enum_tables(service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_enum_tables()
 
-@router.get("/enum_tables/{enum_table_id}", response_model=EnumTableResponseDTO)
+@router.get("/{enum_table_id}", response_model=EnumTableResponseDTO)
 async def get_enum_table(enum_table_id: int, service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -38,7 +38,7 @@ async def get_enum_table(enum_table_id: int, service: EnumTableService = Depends
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return result
 
-@router.put("/enum_tables/{enum_table_id}", response_model=EnumTableResponseDTO)
+@router.put("/{enum_table_id}", response_model=EnumTableResponseDTO)
 async def update_enum_table(enum_table_id: int, data: EnumTableDTO, service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -48,7 +48,7 @@ async def update_enum_table(enum_table_id: int, data: EnumTableDTO, service: Enu
     return result
 
 
-@router.put("/enum_tables/softdel/{enum_table_id}")
+@router.put("/softdel/{enum_table_id}")
 async def delete_soft_enum_table(enum_table_id: int, service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -57,7 +57,7 @@ async def delete_soft_enum_table(enum_table_id: int, service: EnumTableService =
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return {"message": "Enum Table deleted"}
 
-@router.delete("/enum_tables/{enum_table_id}")
+@router.delete("/{enum_table_id}")
 async def delete_enum_table(enum_table_id: int, service: EnumTableService = Depends(get_enum_table_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):

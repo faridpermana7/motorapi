@@ -14,7 +14,7 @@ def get_phrase_service(db: AsyncSession = Depends(get_db)) -> PhraseService:
     repo = PhraseRepository(db)
     return PhraseService(repo)
 
-@router.post("/phrases", response_model=PhraseResponseDTO)
+@router.post("", response_model=PhraseResponseDTO)
 async def create_phrase(data: PhraseDTO, service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_phrase(data: PhraseDTO, service: PhraseService = Depends(get_ph
         raise HTTPException(status_code=400, detail="Failed to create phrase")
     return result
 
-@router.get("/phrases", response_model=List[PhraseResponseDTO])
+@router.get("", response_model=List[PhraseResponseDTO])
 async def list_phrases(service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_phrases()
 
-@router.get("/phrases/{phrase_id}", response_model=PhraseResponseDTO)
+@router.get("/{phrase_id}", response_model=PhraseResponseDTO)
 async def get_phrase(phrase_id: int, service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -38,7 +38,7 @@ async def get_phrase(phrase_id: int, service: PhraseService = Depends(get_phrase
         raise HTTPException(status_code=404, detail="Phrase not found")
     return result
 
-@router.put("/phrases/{phrase_id}", response_model=PhraseResponseDTO)
+@router.put("/{phrase_id}", response_model=PhraseResponseDTO)
 async def update_phrase(phrase_id: int, data: PhraseDTO, service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -47,7 +47,7 @@ async def update_phrase(phrase_id: int, data: PhraseDTO, service: PhraseService 
         raise HTTPException(status_code=404, detail="Phrase not found")
     return result
 
-@router.put("/phrases/softdel/{phrase_id}")
+@router.put("/softdel/{phrase_id}")
 async def delete_soft_phrase(phrase_id: int, service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -56,7 +56,7 @@ async def delete_soft_phrase(phrase_id: int, service: PhraseService = Depends(ge
         raise HTTPException(status_code=404, detail="Phrase not found")
     return {"message": "Phrase deleted"}
 
-@router.delete("/phrases/{phrase_id}")
+@router.delete("/{phrase_id}")
 async def delete_phrase(phrase_id: int, service: PhraseService = Depends(get_phrase_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):

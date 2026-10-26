@@ -15,7 +15,7 @@ def get_transaction_service(db: AsyncSession = Depends(get_db)) -> TransactionSe
     repo = TransactionRepository(db)
     return TransactionService(repo)
 
-@router.post("/transactions", response_model=TransactionResponseDTO)
+@router.post("", response_model=TransactionResponseDTO)
 async def create_transaction(data: TransactionDTO, service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -24,7 +24,7 @@ async def create_transaction(data: TransactionDTO, service: TransactionService =
         raise HTTPException(status_code=400, detail="Failed to create transaction")
     return result
 
-@router.get("/transactions", response_model=List[TransactionResponseDTO])
+@router.get("", response_model=List[TransactionResponseDTO])
 async def list_transactions(service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -40,7 +40,7 @@ async def list_transactions(service: TransactionService = Depends(get_transactio
 
 
 @router.get(
-    "/transactions/pagination",
+    "/pagination",
     response_model=PaginationResponseDTO[TransactionResponseDTO],
 )
 async def list_transactions_paginated(
@@ -60,13 +60,13 @@ async def list_transactions_paginated(
     )
 
 
-@router.get("/transactions/dashboard/perday", response_model=TransactionDashboardPerDayDTO)
+@router.get("/dashboard/perday", response_model=TransactionDashboardPerDayDTO)
 async def get_dashboard_data(service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_dashboard_data()
 
-@router.get("/transactions/{transaction_id}", response_model=TransactionResponseDTO)
+@router.get("/{transaction_id}", response_model=TransactionResponseDTO)
 async def get_transaction(transaction_id: int, service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -75,7 +75,7 @@ async def get_transaction(transaction_id: int, service: TransactionService = Dep
         raise HTTPException(status_code=404, detail="Transaction not found")
     return result
 
-@router.put("/transactions/{transaction_id}", response_model=TransactionResponseDTO)
+@router.put("/{transaction_id}", response_model=TransactionResponseDTO)
 async def update_transaction(transaction_id: int, data: TransactionDTO, service: TransactionService = Depends(get_transaction_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):
@@ -84,7 +84,7 @@ async def update_transaction(transaction_id: int, data: TransactionDTO, service:
         raise HTTPException(status_code=404, detail="Transaction not found")
     return result
 
-@router.put("/transactions/softdel/{transaction_id}")
+@router.put("/softdel/{transaction_id}")
 async def delete_soft_transaction(transaction_id: int, service: TransactionService = Depends(get_transaction_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -93,7 +93,7 @@ async def delete_soft_transaction(transaction_id: int, service: TransactionServi
         raise HTTPException(status_code=404, detail="Transaction not found")
     return {"message": "Transaction deleted"}
 
-@router.delete("/transactions/{transaction_id}")
+@router.delete("/{transaction_id}")
 async def delete_transaction(transaction_id: int, service: TransactionService = Depends(get_transaction_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):

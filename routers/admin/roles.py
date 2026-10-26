@@ -7,14 +7,14 @@ from services.admin.role_service import RoleService, RoleRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from services.auth_service import get_current_user
 
-router = APIRouter(prefix="/roles", tags=["Roles"])
+router = APIRouter()
 
 # Dependency to get RoleService
 def get_role_service(db: AsyncSession = Depends(get_db)) -> RoleService:
     repo = RoleRepository(db)
     return RoleService(repo)
 
-@router.post("/", response_model=RoleResponseDTO, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=RoleResponseDTO, status_code=status.HTTP_201_CREATED)
 async def create_role(
     data: RoleDTO, 
     service: RoleService = Depends(get_role_service),
@@ -25,7 +25,7 @@ async def create_role(
         raise HTTPException(status_code=400, detail="Failed to create role")
     return result
 
-@router.get("/", response_model=List[RoleResponseDTO])
+@router.get("", response_model=List[RoleResponseDTO])
 async def list_roles(
     service: RoleService = Depends(get_role_service),
     current_user: UserInDB = Depends(get_current_user)

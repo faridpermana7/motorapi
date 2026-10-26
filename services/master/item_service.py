@@ -230,7 +230,11 @@ class ItemRepository:
         return [ItemResponseDTO.from_orm(e) for e in entities]
     
     async def get_all_items_stock(self) -> List[ItemResponseDTO]:
-        query = select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)).where(ItemEntity.deleted_at == null() & ItemEntity.stock <= ItemEntity.minimum_stock)
+        query = select(ItemEntity).options(selectinload(ItemEntity.uom), selectinload(ItemEntity.category)
+                                           ).where(
+                                               ItemEntity.deleted_at.is_(None),
+                                               ItemEntity.stock <= ItemEntity.minimum_stock,
+                                           )
         result = await self.session.execute(query)
         entities = result.scalars().all()
         return [ItemResponseDTO.from_orm(e) for e in entities]

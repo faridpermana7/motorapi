@@ -14,7 +14,7 @@ def get_customer_service(db: AsyncSession = Depends(get_db)) -> CustomerService:
     repo = CustomerRepository(db)
     return CustomerService(repo)
 
-@router.post("/customers", response_model=CustomerResponseDTO)
+@router.post("", response_model=CustomerResponseDTO)
 async def create_customer(data: CustomerDTO, service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_customer(data: CustomerDTO, service: CustomerService = Depends(
         raise HTTPException(status_code=400, detail="Failed to create customer")
     return result
 
-@router.get("/customers", response_model=List[CustomerResponseDTO])
+@router.get("", response_model=List[CustomerResponseDTO])
 async def list_customers(service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_customers()
 
-@router.get("/customers/{customer_id}", response_model=CustomerResponseDTO)
+@router.get("/{customer_id}", response_model=CustomerResponseDTO)
 async def get_customer(customer_id: int, service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -38,7 +38,7 @@ async def get_customer(customer_id: int, service: CustomerService = Depends(get_
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return result
 
-@router.put("/customers/{customer_id}", response_model=CustomerResponseDTO)
+@router.put("/{customer_id}", response_model=CustomerResponseDTO)
 async def update_customer(customer_id: int, data: CustomerDTO, service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -48,7 +48,7 @@ async def update_customer(customer_id: int, data: CustomerDTO, service: Customer
     return result
 
 
-@router.put("/customers/softdel/{customer_id}")
+@router.put("/softdel/{customer_id}")
 async def delete_soft_customer(customer_id: int, service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -57,7 +57,7 @@ async def delete_soft_customer(customer_id: int, service: CustomerService = Depe
         raise HTTPException(status_code=404, detail="Enum Table not found")
     return {"message": "Enum Table deleted"}
 
-@router.delete("/customers/{customer_id}")
+@router.delete("/{customer_id}")
 async def delete_customer(customer_id: int, service: CustomerService = Depends(get_customer_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):

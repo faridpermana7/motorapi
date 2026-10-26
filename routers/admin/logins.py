@@ -14,7 +14,7 @@ def get_login_service(db: AsyncSession = Depends(get_db)) -> LoginService:
     repo = LoginRepository(db)
     return LoginService(repo)
 
-@router.post("/logins", response_model=LoginResponseDTO)
+@router.post("", response_model=LoginResponseDTO)
 async def create_login(data: LoginDTO, service: LoginService = Depends(get_login_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_login(data: LoginDTO, service: LoginService = Depends(get_login
         raise HTTPException(status_code=400, detail="Failed to create login")
     return result
 
-@router.get("/logins", response_model=List[LoginResponseDTO])
+@router.get("", response_model=List[LoginResponseDTO])
 async def list_logins(service: LoginService = Depends(get_login_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_logins()
 
-@router.get("/logins/{login_id}", response_model=LoginResponseDTO)
+@router.get("/{login_id}", response_model=LoginResponseDTO)
 async def get_login(login_id: int, service: LoginService = Depends(get_login_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -38,7 +38,7 @@ async def get_login(login_id: int, service: LoginService = Depends(get_login_ser
         raise HTTPException(status_code=404, detail="Login not found")
     return result
 
-@router.put("/logins/{login_id}", response_model=LoginResponseDTO)
+@router.put("/{login_id}", response_model=LoginResponseDTO)
 async def update_login(login_id: int, data: LoginDTO, service: LoginService = Depends(get_login_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):
@@ -47,7 +47,7 @@ async def update_login(login_id: int, data: LoginDTO, service: LoginService = De
         raise HTTPException(status_code=404, detail="Login not found")
     return result
 
-@router.put("/logins/softdel/{login_id}")
+@router.put("/softdel/{login_id}")
 async def delete_soft_login(login_id: int, service: LoginService = Depends(get_login_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -56,7 +56,7 @@ async def delete_soft_login(login_id: int, service: LoginService = Depends(get_l
         raise HTTPException(status_code=404, detail="Login not found")
     return {"message": "Login deleted"}
 
-@router.delete("/logins/{login_id}")
+@router.delete("/{login_id}")
 async def delete_login(login_id: int, service: LoginService = Depends(get_login_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):

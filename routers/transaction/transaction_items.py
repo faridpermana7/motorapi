@@ -14,7 +14,7 @@ def get_transaction_item_service(db: AsyncSession = Depends(get_db)) -> Transact
     repo = TransactionItemRepository(db)
     return TransactionItemService(repo)
 
-@router.post("/transaction_items", response_model=TransactionItemResponseDTO)
+@router.post("", response_model=TransactionItemResponseDTO)
 async def create_transaction_item(data: TransactionItemDTO, service: TransactionItemService = Depends(get_transaction_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -23,13 +23,13 @@ async def create_transaction_item(data: TransactionItemDTO, service: Transaction
         raise HTTPException(status_code=400, detail="Failed to create transaction_item")
     return result
 
-@router.get("/transaction_items", response_model=List[TransactionItemResponseDTO])
+@router.get("", response_model=List[TransactionItemResponseDTO])
 async def list_transaction_items(service: TransactionItemService = Depends(get_transaction_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
     return await service.get_all_transaction_items()
 
-@router.get("/transaction_items/{transaction_id}", response_model=List[TransactionItemResponseDTO])
+@router.get("/{transaction_id}", response_model=List[TransactionItemResponseDTO])
 async def get_transaction_item(transaction_id: int, service: TransactionItemService = Depends(get_transaction_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                       ):
@@ -38,7 +38,7 @@ async def get_transaction_item(transaction_id: int, service: TransactionItemServ
         raise HTTPException(status_code=404, detail="TransactionItem not found")
     return result
 
-@router.put("/transaction_items/{transaction_item_id}", response_model=TransactionItemResponseDTO)
+@router.put("/{transaction_item_id}", response_model=TransactionItemResponseDTO)
 async def update_transaction_item(transaction_item_id: int, data: TransactionItemDTO, service: TransactionItemService = Depends(get_transaction_item_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):
@@ -47,7 +47,7 @@ async def update_transaction_item(transaction_item_id: int, data: TransactionIte
         raise HTTPException(status_code=404, detail="TransactionItem not found")
     return result
 
-@router.put("/transaction_items/softdel/{transaction_item_id}")
+@router.put("/softdel/{transaction_item_id}")
 async def delete_soft_transaction_item(transaction_item_id: int, service: TransactionItemService = Depends(get_transaction_item_service),
                       current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
 ):
@@ -56,7 +56,7 @@ async def delete_soft_transaction_item(transaction_item_id: int, service: Transa
         raise HTTPException(status_code=404, detail="TransactionItem not found")
     return {"message": "TransactionItem deleted"}
 
-@router.delete("/transaction_items/{transaction_item_id}")
+@router.delete("/{transaction_item_id}")
 async def delete_transaction_item(transaction_item_id: int, service: TransactionItemService = Depends(get_transaction_item_service),
                        current_user: UserInDB = Depends(get_current_user)  # Protected endpoint
                        ):

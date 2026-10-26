@@ -37,7 +37,7 @@ class UserEntity(Base):
 class UserDTO(BaseModel):
     username: str
     email: str
-    role_id: int
+    role_id: Optional[int]
     password: Optional[str] = None  
 
     class Config:
